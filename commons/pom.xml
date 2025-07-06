@@ -14,4 +14,11 @@
     <packaging>jar</packaging>
     <name>Split Commons</name>
     <description>Postgres utilities and shared components</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+    </dependencies>
 </project>

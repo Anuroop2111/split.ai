@@ -24,6 +24,10 @@
             <groupId>split.ai</groupId>
             <artifactId>split-service-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>split.ai</groupId>
+            <artifactId>commons</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

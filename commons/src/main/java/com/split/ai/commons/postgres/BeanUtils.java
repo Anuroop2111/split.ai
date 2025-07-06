@@ -1,13 +1,15 @@
 package com.split.ai.commons.postgres;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class BeanUtils {
-    private BeanUtils() {}
 
     static Map<String, Object> toMap(Object bean) {
         BeanWrapper wrapper = new BeanWrapperImpl(bean);

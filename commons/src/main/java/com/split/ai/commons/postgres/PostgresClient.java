@@ -8,17 +8,15 @@ import java.util.Map;
  */
 public interface PostgresClient {
 
-    <T> T insert(String tableName, T object);
+    <T> T insert(T object);
 
-    <T> int update(String tableName, T object, Map<String, Object> filters);
+    <T> T update(T object);
 
-    <T> int upsert(String tableName, T object, Map<String, Object> filters);
+    <T> T upsert(T object);
 
-    <T> T findById(String tableName, Object id, Class<T> clazz);
+    <T> T findById(Class<T> clazz, Object id);
 
-    <T> T find(String tableName, Map<String, Object> filters, Class<T> clazz);
+    <T> List<T> findAll(Class<T> clazz, Map<String, Object> filters);
 
-    <T> List<T> findAll(String tableName, Map<String, Object> filters, Class<T> clazz);
-
-    <T> List<T> query(String sql, Map<String, Object> params, Class<T> clazz);
+    <T> List<T> query(String jpql, Map<String, Object> params, Class<T> clazz);
 }

@@ -1,91 +1,70 @@
 package com.split.ai.commons.postgres;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Default implementation of {@link PostgresClient} using {@link NamedParameterJdbcTemplate}.
+ * JPA based implementation of {@link PostgresClient} backed by {@link EntityManager}.
  */
-@Component
+@Repository
+@Transactional
 public class PostgresClientImpl implements PostgresClient {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final DataSource dataSource;
-
-    @Autowired
-    public PostgresClientImpl(NamedParameterJdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.dataSource = dataSource;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public <T> T insert(String tableName, T object) {
-        SimpleJdbcInsert insert = new SimpleJdbcInsert(dataSource)
-                .withTableName(tableName)
-                .usingGeneratedKeyColumns("id");
-        Number id = insert.executeAndReturnKey(new BeanPropertySqlParameterSource(object));
-        // attempt to set generated id back on object if property exists
-        try {
-            object.getClass().getMethod("setId", Long.class).invoke(object, id.longValue());
-        } catch (Exception ignored) {
-        }
+    public <T> T insert(T object) {
+        entityManager.persist(object);
         return object;
     }
 
     @Override
-    public <T> int update(String tableName, T object, Map<String, Object> filters) {
-        Map<String, Object> values = BeanUtils.toMap(object);
-        String sql = "UPDATE " + tableName + " SET " + QueryUtils.updateAssignments(values)
-                + QueryUtils.whereClause(filters);
-        MapSqlParameterSource source = new MapSqlParameterSource();
-        values.forEach(source::addValue);
-        if (filters != null) {
-            filters.forEach(source::addValue);
+    public <T> T update(T object) {
+        return entityManager.merge(object);
+    }
+
+    @Override
+    public <T> T upsert(T object) {
+        return entityManager.merge(object);
+    }
+
+    @Override
+    public <T> T findById(Class<T> clazz, Object id) {
+        return entityManager.find(clazz, id);
+    }
+
+    @Override
+    public <T> List<T> findAll(Class<T> clazz, Map<String, Object> filters) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+        if (filters != null && !filters.isEmpty()) {
+            List<Predicate> predicates = new ArrayList<>();
+            filters.forEach((k, v) -> predicates.add(cb.equal(root.get(k), v)));
+            cq.where(predicates.toArray(new Predicate[0]));
         }
-        return jdbcTemplate.update(sql, source);
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override
-    public <T> int upsert(String tableName, T object, Map<String, Object> filters) {
-        // naive implementation: try update first, if nothing updated then insert
-        int updated = update(tableName, object, filters);
-        if (updated == 0) {
-            insert(tableName, object);
-            return 1;
+    public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> clazz) {
+        TypedQuery<T> query = entityManager.createQuery(jpql, clazz);
+        if (params != null) {
+            params.forEach(query::setParameter);
         }
-        return updated;
-    }
-
-    @Override
-    public <T> T findById(String tableName, Object id, Class<T> clazz) {
-        String sql = "SELECT * FROM " + tableName + " WHERE id = :id";
-        MapSqlParameterSource source = new MapSqlParameterSource("id", id);
-        return jdbcTemplate.queryForObject(sql, source, BeanPropertyRowMapper.newInstance(clazz));
-    }
-
-    @Override
-    public <T> T find(String tableName, Map<String, Object> filters, Class<T> clazz) {
-        String sql = "SELECT * FROM " + tableName + QueryUtils.whereClause(filters) + " LIMIT 1";
-        return jdbcTemplate.queryForObject(sql, filters, BeanPropertyRowMapper.newInstance(clazz));
-    }
-
-    @Override
-    public <T> List<T> findAll(String tableName, Map<String, Object> filters, Class<T> clazz) {
-        String sql = "SELECT * FROM " + tableName + QueryUtils.whereClause(filters);
-        return jdbcTemplate.query(sql, filters, BeanPropertyRowMapper.newInstance(clazz));
-    }
-
-    @Override
-    public <T> List<T> query(String sql, Map<String, Object> params, Class<T> clazz) {
-        return jdbcTemplate.query(sql, params, BeanPropertyRowMapper.newInstance(clazz));
+        return query.getResultList();
     }
 }

@@ -27,11 +27,14 @@ public class GroupEntity {
     @Column(nullable = false)
     private String groupName;
 
-    private Long createdAt;
-
-    private Long updatedAt;
-
     @ManyToOne
     @JoinColumn(name = "baseCurrencyId")
+    @Column(nullable = false)
     private CurrencyEntity baseCurrency;
+
+    @Column(nullable = false)
+    private Long createdAt;
+
+    @Column(nullable = false)
+    private Long updatedAt;
 }

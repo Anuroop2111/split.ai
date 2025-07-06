@@ -1,6 +1,7 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.repository.entity.enums.CurrencyType;
+import com.split.ai.split.service.repository.enums.CurrencyType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,6 +26,7 @@ public class CurrencyEntity {
     private UUID currencyId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CurrencyType currency;
 
     private String currencySymbolUrl;

@@ -1,5 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,5 +36,6 @@ public class ExpenseShareEntity {
     @JoinColumn(name = "userId")
     private UserEntity user;
 
+    @Column(nullable = false)
     private BigDecimal sharedAmount;
 }

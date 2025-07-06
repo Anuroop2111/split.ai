@@ -1,5 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -21,8 +22,10 @@ public class CategoryEntity {
     @Id
     private UUID categoryId;
 
+    @Column(nullable = false)
     private String subCategory;
 
+    @Column(nullable = false)
     private String category;
 
     private String subCategoryImageUrl;

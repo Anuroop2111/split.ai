@@ -1,4 +1,4 @@
-package com.split.ai.split.service.repository.entity.enums;
+package com.split.ai.split.service.repository.enums;
 
 public enum SplitMode {
     EQUAL,

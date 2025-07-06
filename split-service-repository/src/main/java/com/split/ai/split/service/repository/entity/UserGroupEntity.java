@@ -1,6 +1,7 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.repository.entity.enums.Role;
+import com.split.ai.split.service.repository.enums.Role;
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,5 +38,6 @@ public class UserGroupEntity {
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 }

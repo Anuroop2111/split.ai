@@ -1,6 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.repository.entity.enums.UserStatus;
+import com.split.ai.split.service.repository.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -44,9 +44,12 @@ public class UserEntity {
     private String phone;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserStatus userStatus;
 
+    @Column(nullable = false)
     private Long createdAt;
 
+    @Column(nullable = false)
     private Long updatedAt;
 }

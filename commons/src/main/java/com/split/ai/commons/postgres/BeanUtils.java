@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class BeanUtils {
-    private BeanUtils() {
-    }
+    private BeanUtils() {}
 
     static Map<String, Object> toMap(Object bean) {
         BeanWrapper wrapper = new BeanWrapperImpl(bean);

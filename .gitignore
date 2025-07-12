@@ -1,0 +1,17 @@
+# Maven build directories
+**/target/
+
+# IntelliJ IDEA
+.idea/
+!.idea/.gitignore
+*.iml
+
+# Logs and compiled classes
+*.log
+*.class
+
+# OS generated files
+.DS_Store
+
+# XML files
+*.xml

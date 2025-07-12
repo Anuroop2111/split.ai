@@ -8,10 +8,10 @@
 
     <groupId>split.ai</groupId>
     <artifactId>split-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${version}</version>
     <name>Split Service</name>
     <description>Core API and Algorithm Engine</description>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -21,6 +21,7 @@
     </parent>
 
     <properties>
+        <version>0.0.1-SNAPSHOT</version>
         <java.version>21</java.version>
         <lombok.version>1.18.38</lombok.version>
     </properties>

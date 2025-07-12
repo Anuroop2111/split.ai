@@ -19,14 +19,17 @@
         <dependency>
             <groupId>split.ai</groupId>
             <artifactId>split-service-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>split.ai</groupId>
             <artifactId>split-service-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>split.ai</groupId>
             <artifactId>commons</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

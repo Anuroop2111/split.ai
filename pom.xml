@@ -8,7 +8,7 @@
 
     <groupId>split.ai</groupId>
     <artifactId>split-service</artifactId>
-    <version>${version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Split Service</name>
     <description>Core API and Algorithm Engine</description>
     <packaging>pom</packaging>
@@ -21,7 +21,7 @@
     </parent>
 
     <properties>
-        <version>0.0.1-SNAPSHOT</version>
+        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>21</java.version>
         <lombok.version>1.18.38</lombok.version>
     </properties>
@@ -100,6 +100,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.22</version>
+        </dependency>
+
+
     </dependencies>
 
     <!-- 3️⃣  Build plugins -->
@@ -121,6 +128,24 @@
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                     </configuration>
+                </plugin>
+
+                <!-- Flatten plugin to inject version -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                    <configuration>
+                        <updatePomFile>true</updatePomFile>
+                        <projectVersionReplacement>${project.version}</projectVersionReplacement>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

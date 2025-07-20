@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Shows how much a user needs to pay in an expense
+ */
+
 @Data
 @Builder
 @NoArgsConstructor

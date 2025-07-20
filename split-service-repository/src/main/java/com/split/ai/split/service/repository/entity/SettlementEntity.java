@@ -23,7 +23,7 @@ public class SettlementEntity {
     @Id
     private UUID settlementId;
 
-    @Column(name = "groupId")
+    @Column(name = "groupId", nullable = true)
     private UUID groupId;
 
     @Column(name = "from_user", nullable = false)

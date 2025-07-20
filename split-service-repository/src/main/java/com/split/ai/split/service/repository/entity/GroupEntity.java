@@ -1,14 +1,14 @@
 package com.split.ai.split.service.repository.entity;
 
 import com.split.ai.split.service.model.enums.CurrencyType;
+import com.split.ai.split.service.model.enums.GroupStatus;
 import com.split.ai.split.service.model.enums.GroupType;
+import com.split.ai.split.service.model.enums.SettleMode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +16,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
-
-import static com.split.ai.split.service.model.enums.CurrencyType.INR;
-import static com.split.ai.split.service.model.enums.GroupType.COMMON;
 
 @Data
 @Builder
@@ -41,6 +38,14 @@ public class GroupEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CurrencyType currency;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SettleMode settleMode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GroupStatus groupStatus;
 
     @Column(nullable = false)
     private Long createdAt;

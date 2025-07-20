@@ -1,8 +1,10 @@
 package com.split.ai.split.service.repository.entity;
 
+import com.split.ai.split.service.model.enums.Category;
 import com.split.ai.split.service.model.enums.CurrencyType;
 import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.enums.SplitMode;
+import com.split.ai.split.service.model.enums.SubCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -48,7 +50,10 @@ public class ExpenseEntity {
     private CurrencyType currency;
 
     @Column(name = "subCategory", nullable = false)
-    private String subCategory;
+    private SubCategory subCategory;
+
+    @Column(name = "category", nullable = false)
+    private Category category;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

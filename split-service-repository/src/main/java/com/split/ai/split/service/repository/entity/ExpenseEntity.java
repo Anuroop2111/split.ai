@@ -7,10 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,15 +28,13 @@ public class ExpenseEntity {
     @Id
     private UUID expenseId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "groupId")
-    private GroupEntity group;
+    @Column(name = "groupId")
+    private UUID groupId;
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payerId")
-    private UserEntity payer;
+    @Column(name = "payerId", nullable = false)
+    private UUID payerId;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -52,9 +47,8 @@ public class ExpenseEntity {
     @Column(nullable = false)
     private CurrencyType currency;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
-    private CategoryEntity category;
+    @Column(name = "categoryId")
+    private UUID categoryId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -2,10 +2,7 @@ package com.split.ai.split.service.repository.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,17 +23,14 @@ public class SettlementEntity {
     @Id
     private UUID settlementId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "groupId")
-    private GroupEntity group;
+    @Column(name = "groupId")
+    private UUID groupId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_user")
-    private UserEntity fromUser;
+    @Column(name = "from_user", nullable = false)
+    private UUID fromUserId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_user")
-    private UserEntity toUser;
+    @Column(name = "to_user", nullable = false)
+    private UUID toUserId;
 
     @Column(nullable = false)
     private BigDecimal amount;

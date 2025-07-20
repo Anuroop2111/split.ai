@@ -22,8 +22,6 @@ public class FxRatesEntity {
     @EmbeddedId
     private FxRatesKey id;
 
-
-
     @Column(nullable = false)
     private BigDecimal rate;
 }

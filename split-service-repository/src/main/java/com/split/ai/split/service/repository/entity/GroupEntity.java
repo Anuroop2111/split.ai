@@ -1,5 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
+import com.split.ai.split.service.model.enums.CurrencyType;
 import com.split.ai.split.service.model.enums.GroupType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import static com.split.ai.split.service.model.enums.CurrencyType.INR;
+import static com.split.ai.split.service.model.enums.GroupType.COMMON;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,12 +35,12 @@ public class GroupEntity {
     private String groupName;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private GroupType groupType;
 
-    @ManyToOne
-    @JoinColumn(name = "baseCurrencyId")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CurrencyEntity baseCurrency;
+    private CurrencyType currency;
 
     @Column(nullable = false)
     private Long createdAt;

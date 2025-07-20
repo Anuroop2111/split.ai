@@ -22,9 +22,11 @@ public class CategoryEntity {
     @Id
     private UUID categoryId;
 
+    // todo: Replace with Subcategory ENUM
     @Column(nullable = false)
     private String subCategory;
 
+    // todo: Replace with Category ENUM
     @Column(nullable = false)
     private String category;
 

@@ -28,7 +28,7 @@ public class ExpenseEntity {
     @Id
     private UUID expenseId;
 
-    @Column(name = "groupId")
+    @Column(name = "groupId", nullable = true)
     private UUID groupId;
 
     private String description;
@@ -47,8 +47,8 @@ public class ExpenseEntity {
     @Column(nullable = false)
     private CurrencyType currency;
 
-    @Column(name = "categoryId")
-    private UUID categoryId;
+    @Column(name = "subCategory", nullable = false)
+    private String subCategory;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

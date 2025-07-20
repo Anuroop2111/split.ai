@@ -48,3 +48,8 @@ https://github.com/angular/angular/blob/main/contributing-docs/commit-message-gu
 - In case a specific class in not present, create that class in the respective directory and package
 - In case a method is not present, create that method in its respective class
 - If a methods's logic component is getting too long, try to refactor them into logical sub-modules
+
+**** To be followed while writing Controller class
+- Annotate the Methods with suitable actions (GET, POST, PUT, DELETE)
+- name the controller methods according to the business logic that it helps in
+- Make sure to have the endpoint defined according to the business logic

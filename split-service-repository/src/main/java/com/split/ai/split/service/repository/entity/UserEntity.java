@@ -1,6 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.repository.enums.UserStatus;
+import com.split.ai.split.service.model.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

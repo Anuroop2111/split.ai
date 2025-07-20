@@ -1,4 +1,4 @@
-package com.split.ai.split.service.repository.enums;
+package com.split.ai.split.service.model.enums;
 
 public enum ExpenseStatus {
     PENDING,

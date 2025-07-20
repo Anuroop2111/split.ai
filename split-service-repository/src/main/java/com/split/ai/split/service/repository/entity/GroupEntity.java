@@ -1,7 +1,10 @@
 package com.split.ai.split.service.repository.entity;
 
+import com.split.ai.split.service.model.enums.GroupType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -26,6 +29,9 @@ public class GroupEntity {
 
     @Column(nullable = false)
     private String groupName;
+
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
 
     @ManyToOne
     @JoinColumn(name = "baseCurrencyId")

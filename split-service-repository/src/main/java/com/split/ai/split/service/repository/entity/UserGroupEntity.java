@@ -1,6 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.repository.enums.Role;
+import com.split.ai.split.service.model.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

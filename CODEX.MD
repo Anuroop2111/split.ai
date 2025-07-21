@@ -17,13 +17,14 @@ https://github.com/angular/angular/blob/main/contributing-docs/commit-message-gu
 **** To be followed in a Repository Layer
 - In the repository layer, use try catch block, with proper logs
 
-**** To be followed while writing Request/Response classes
+**** To be followed while writing Request/Response/Dto classes
 - If the Request or Response are to be used in Controller layer, add it to the Model Directory and then use it in Controller class. These requests and responses can enforce validations (NotNull, NotBlank, etc.,)
 - If the Request or Response classes are to be used in the Service layer (Core Layer), add suffix ServiceRequest/ ServiceResponse to them (eg., myRequest in Controller, and myServiceRequest in Service layer)
 - When myRequest in Controller layer goes to myServiceRequest in Service layer, use MapStruct's Mapper classes to convert them
 - No validation annotations will be present in ServiceRequest. ie., @NotNull, @NotBlank, etc will not be present
 - No Serialization will be present in ServiceRequest
 - Everything else will be the same, the attributes, the attribute names, order, etc. in ServiceRequest
+- If there are multiple requests/response/dto if with same attributes, create BaseRequest/Response/Dto and extend the other objects from that BaseObject
 
 **** To be followed while writing Mapper Classes
 - Use MappStruct's Mapper to write mapper to convert a parameter or a list of parameters to a single response class

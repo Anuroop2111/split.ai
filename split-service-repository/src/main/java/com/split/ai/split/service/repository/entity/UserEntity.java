@@ -47,7 +47,7 @@ public class UserEntity {
     @Column(nullable = false)
     private UserStatus userStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long createdAt;
 
     @Column(nullable = false)

@@ -2,7 +2,11 @@ package com.split.ai.split.service.repository.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,21 +27,29 @@ public class SettlementEntity {
     @Id
     private UUID settlementId;
 
-    @Column(name = "groupId", nullable = true)
-    private UUID groupId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "groupId",
+            foreignKey = @ForeignKey(name = "fk_settlement_group"))
+    private GroupEntity group;
 
-    @Column(name = "from_user", nullable = false)
-    private UUID fromUserId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "from_user",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_settlement_from"))
+    private UserEntity fromUser;
 
-    @Column(name = "to_user", nullable = false)
-    private UUID toUserId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "to_user",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_settlement_to"))
+    private UserEntity toUser;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal amount;
 
     @Column(columnDefinition = "text")
     private String note;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long createdAt;
 }

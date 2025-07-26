@@ -24,7 +24,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
@@ -55,7 +54,7 @@ public class ExpenseRevisionEntity {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Instant editedAt;
+    private Long editedAt;
 
     /* ---------- snapshot of mutable fields ---------- */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

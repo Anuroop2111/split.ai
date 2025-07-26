@@ -47,7 +47,7 @@ public class GroupEntity {
     @Column(nullable = false)
     private GroupStatus groupStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long createdAt;
 
     @Column(nullable = false)

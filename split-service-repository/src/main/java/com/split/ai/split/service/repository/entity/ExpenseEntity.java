@@ -1,22 +1,21 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.model.enums.Category;
-import com.split.ai.split.service.model.enums.CurrencyType;
-import com.split.ai.split.service.model.enums.ExpenseStatus;
-import com.split.ai.split.service.model.enums.SplitMode;
-import com.split.ai.split.service.model.enums.SubCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -30,44 +29,21 @@ public class ExpenseEntity {
     @Id
     private UUID expenseId;
 
-    @Column(name = "groupId", nullable = true)
-    private UUID groupId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "groupId", foreignKey =
+    @ForeignKey(name = "fk_expense_group"))
+    private GroupEntity group;
 
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currentRevisionId", nullable = false, foreignKey =
+    @ForeignKey(name = "fk_expense_current_rev"))
+    private ExpenseRevisionEntity currentRevision;
 
-    @Column(name = "payerId", nullable = false)
-    private UUID payerId;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
-    private BigDecimal amount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SplitMode splitMode;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CurrencyType currency;
-
-    @Column(name = "subCategory", nullable = false)
-    private SubCategory subCategory;
-
-    @Column(name = "category", nullable = false)
-    private Category category;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ExpenseStatus expenseStatus;
-
-    @Column(nullable = false)
-    private Long expenseDate;
-
-    @Column(columnDefinition = "text")
-    private String metaData;
-
-    @Column(nullable = false)
-    private Long createdAt;
-
-    @Column(nullable = false)
-    private Long updatedAt;
+    private Instant updatedAt;
 }

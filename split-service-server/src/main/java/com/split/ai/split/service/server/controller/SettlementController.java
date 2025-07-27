@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/groups")
+@RequestMapping("/v1/settlements")
 @RequiredArgsConstructor
-public class GroupController {
+public class SettlementController {
 }

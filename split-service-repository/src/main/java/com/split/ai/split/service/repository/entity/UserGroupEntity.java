@@ -26,4 +26,6 @@ public class UserGroupEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    private Long createdAt;
 }

@@ -99,5 +99,5 @@ public class ExpenseRevisionEntity {
      */
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb", nullable = false)
-    private Map<UUID, BigDecimal> sharesBefore;
+    private Map<UUID, BigDecimal> userShares;
 }

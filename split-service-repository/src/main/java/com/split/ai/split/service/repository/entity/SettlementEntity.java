@@ -1,5 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
+import com.split.ai.split.service.model.enums.CurrencyType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,6 +47,8 @@ public class SettlementEntity {
 
     @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal amount;
+
+    private CurrencyType currencyType;
 
     @Column(columnDefinition = "text")
     private String note;

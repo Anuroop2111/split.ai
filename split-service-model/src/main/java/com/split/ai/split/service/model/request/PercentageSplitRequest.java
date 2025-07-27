@@ -1,4 +1,4 @@
-package main.java.com.split.ai.split.service.model.request;
+package com.split.ai.split.service.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,18 +8,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
-import java.io.Serializable;
+import java.util.List;
 
+/**
+ * Split request based on percentage.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserProfileResponse implements Serializable {
+public class PercentageSplitRequest implements SplitRequest {
     @Serial
-    private static final long serialVersionUID = -1046631501063901127L;
+    private static final long serialVersionUID = -1028392738982734111L;
 
-    private String userId;
-
+    private List<UserPercentageSplitDto> userPercentageSplitDtoList;
 }

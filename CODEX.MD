@@ -54,3 +54,5 @@ https://github.com/angular/angular/blob/main/contributing-docs/commit-message-gu
 - Annotate the Methods with suitable actions (GET, POST, PUT, DELETE)
 - name the controller methods according to the business logic that it helps in
 - Make sure to have the endpoint defined according to the business logic
+- Make sure to add proper Validations to the path params (@NotBlank) and to the RequestBody (@Valid)
+- Make sure to annotate the RequestBody attributes with proper annotations

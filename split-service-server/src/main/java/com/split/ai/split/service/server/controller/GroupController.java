@@ -1,15 +1,29 @@
 package com.split.ai.split.service.server.controller;
 
-import com.split.ai.split.service.core.service.GroupService;
-import com.split.ai.split.service.model.request.*;
-import com.split.ai.split.service.model.response.GroupExpenseResponse;
-import com.split.ai.split.service.model.response.GroupUserResponse;
+import com.split.ai.split.service.core.service.IGroupService;
+import com.split.ai.split.service.model.request.group.AddUserToGroupRequest;
+import com.split.ai.split.service.model.request.group.CreateGroupRequest;
+import com.split.ai.split.service.model.request.group.DeleteGroupRequest;
+import com.split.ai.split.service.model.request.group.InviteMembersToGroupRequest;
+import com.split.ai.split.service.model.request.group.LeaveGroupRequest;
+import com.split.ai.split.service.model.request.group.RemoveUserFromGroupRequest;
+import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
+import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
+import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
+import com.split.ai.split.service.model.response.group.GroupUserResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
@@ -22,7 +36,7 @@ import java.util.UUID;
 @Slf4j
 public class GroupController {
 
-    private final GroupService groupService;
+    private final IGroupService groupService;
 
     @GetMapping("/{groupId}/detailed")
     public ResponseEntity<GroupExpenseResponse> getGroupDetails(@PathVariable @NotBlank String groupId) {
@@ -53,7 +67,7 @@ public class GroupController {
     }
 
     @PostMapping("/toggle-mode")
-    public ResponseEntity<Void> toggleMode(@Valid @RequestBody ToggleSettleModeRequest request) {
+    public ResponseEntity<Void> toggleMode(@Valid @RequestBody ToggleGroupSettleMode request) {
         log.info("[GroupController : toggleMode] : {}", request);
         groupService.toggleSettleMode(request);
         return ResponseEntity.ok().build();

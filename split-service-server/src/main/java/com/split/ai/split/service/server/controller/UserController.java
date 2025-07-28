@@ -1,16 +1,22 @@
 package com.split.ai.split.service.server.controller;
 
-import com.split.ai.split.service.core.service.UserService;
-import com.split.ai.split.service.model.request.UpdateUserProfileRequest;
-import com.split.ai.split.service.model.response.UserGroupsResponse;
-import com.split.ai.split.service.model.response.UserProfileResponse;
-import com.split.ai.split.service.model.response.UserSuggestResponse;
+import com.split.ai.split.service.core.service.IUserService;
+import com.split.ai.split.service.model.request.user.UpdateUserProfileRequest;
+import com.split.ai.split.service.model.response.user.UserGroupsResponse;
+import com.split.ai.split.service.model.response.user.UserProfileResponse;
+import com.split.ai.split.service.model.response.user.UserSuggestResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller handling user related operations.
@@ -21,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @GetMapping("/profile/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable @NotBlank String userId) {

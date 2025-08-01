@@ -14,9 +14,9 @@ public interface PostgresClient {
 
     <T> T upsert(T object);
 
-    <T> T findById(Class<T> clazz, Object id);
+    <T> T findById(Class<T> cls, Object id);
 
-    <T> List<T> findAll(Class<T> clazz, Map<String, Object> filters);
+    <T> List<T> findAll(Class<T> cls, Map<String, Object> filters);
 
-    <T> List<T> query(String jpql, Map<String, Object> params, Class<T> clazz);
+    <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls);
 }

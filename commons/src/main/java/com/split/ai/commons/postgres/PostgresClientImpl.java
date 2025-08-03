@@ -43,130 +43,57 @@ public class PostgresClientImpl implements PostgresClient {
 
     @Override
     public <T> T partialUpdate(T object) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id);
-        if (existing == null) throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doPartialUpdate(object, null, null);
     }
 
     @Override
     public <T> T partialUpdate(T object, LockModeType lockMode) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
-        if (existing == null) {
-            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
-        }
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doPartialUpdate(object, lockMode, null);
     }
 
     @Override
     public <T> T partialUpdate(T object, LockModeType lockMode, int lockTimeout) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(
-                cls,
-                id,
-                lockMode,
-                Map.of("javax.persistence.lock.timeout", lockTimeout)
-        );
-        if (existing == null) {
-            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
-        }
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doPartialUpdate(object, lockMode, lockTimeout);
     }
 
     @Override
     public <T> T upsert(T object) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id);
-        if (existing == null) {
-            return entityManager.merge(object);
-        }
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doUpsert(object, null, null);
     }
 
     @Override
     public <T> T upsert(T object, LockModeType lockMode) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
-        if (existing == null) {
-            return entityManager.merge(object);
-        }
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doUpsert(object, lockMode, null);
     }
 
     @Override
     public <T> T upsert(T object, LockModeType lockMode, int lockTimeout) {
-        Class<T> cls = (Class<T>) object.getClass();
-        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(
-                cls,
-                id,
-                lockMode,
-                Map.of("javax.persistence.lock.timeout", lockTimeout)
-        );
-        if (existing == null) {
-            return entityManager.merge(object);
-        }
-        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-        return existing;
+        return doUpsert(object, lockMode, lockTimeout);
     }
 
     @Override
     public <T> T findById(Class<T> cls, Object id) {
-        return entityManager.find(cls, id);
+        return findEntity(cls, id, null, null);
     }
 
     @Override
     public <T> T findById(Class<T> cls, Object id, LockModeType lockMode) {
-        return entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
+        return findEntity(cls, id, lockMode, null);
     }
 
     @Override
     public <T> T findById(Class<T> cls, Object id, LockModeType lockMode, int lockTimeout) {
-        return entityManager.find(
-                cls,
-                id,
-                lockMode,
-                Map.of("javax.persistence.lock.timeout", lockTimeout)
-        );
+        return findEntity(cls, id, lockMode, lockTimeout);
     }
 
     @Override
     public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(cls);
-        Root<T> root = cq.from(cls);
-        if (filters != null && !filters.isEmpty()) {
-            List<Predicate> predicates = new ArrayList<>();
-            filters.forEach((k, v) -> predicates.add(cb.equal(root.get(k), v)));
-            cq.where(predicates.toArray(new Predicate[0]));
-        }
-        return entityManager.createQuery(cq).getResultList();
+        return findAll(cls, filters, null, null);
     }
 
     @Override
     public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters, LockModeType lockMode) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(cls);
-        Root<T> root = cq.from(cls);
-        if (filters != null && !filters.isEmpty()) {
-            List<Predicate> predicates = new ArrayList<>();
-            filters.forEach((k, v) -> predicates.add(cb.equal(root.get(k), v)));
-            cq.where(predicates.toArray(new Predicate[0]));
-        }
-        TypedQuery<T> query = entityManager.createQuery(cq);
-        query.setLockMode(lockMode);
-        return query.getResultList();
+        return findAll(cls, filters, lockMode, null);
     }
 
     @Override
@@ -180,32 +107,18 @@ public class PostgresClientImpl implements PostgresClient {
             cq.where(predicates.toArray(new Predicate[0]));
         }
         TypedQuery<T> query = entityManager.createQuery(cq);
-        query.setLockMode(lockMode);
-        query.setHint("javax.persistence.lock.timeout", lockTimeout);
+        applyLockOptions(query, lockMode, lockTimeout, false);
         return query.getResultList();
     }
 
     @Override
     public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls) {
-        TypedQuery<T> query = entityManager.createQuery(jpql, cls);
-        if (params != null) {
-            params.forEach(query::setParameter);
-        }
-        return query.getResultList();
+        return query(jpql, params, cls, null, null);
     }
 
     @Override
     public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode) {
-        TypedQuery<T> query = entityManager.createQuery(jpql, cls);
-        if (params != null) {
-            params.forEach(query::setParameter);
-        }
-        if (lockMode != null) {
-            query.setLockMode(lockMode);
-            // Ensure locks propagate to joined associations
-            query.setHint("javax.persistence.lock.scope", "EXTENDED");
-        }
-        return query.getResultList();
+        return query(jpql, params, cls, lockMode, null);
     }
 
     @Override
@@ -214,16 +127,52 @@ public class PostgresClientImpl implements PostgresClient {
         if (params != null) {
             params.forEach(query::setParameter);
         }
+        applyLockOptions(query, lockMode, lockTimeout, true);
+        return query.getResultList();
+    }
+
+    private <T> T doPartialUpdate(T object, LockModeType lockMode, Integer lockTimeout) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = findEntity(cls, id, lockMode, lockTimeout);
+        if (existing == null) {
+            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+        }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    private <T> T doUpsert(T object, LockModeType lockMode, Integer lockTimeout) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = findEntity(cls, id, lockMode, lockTimeout);
+        if (existing == null) {
+            return entityManager.merge(object);
+        }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    private <T> T findEntity(Class<T> cls, Object id, LockModeType lockMode, Integer lockTimeout) {
+        if (lockMode == null) {
+            return entityManager.find(cls, id);
+        }
+        Map<String, Object> hints = (lockTimeout != null && lockTimeout > 0)
+                ? Map.of("javax.persistence.lock.timeout", lockTimeout)
+                : DEFAULT_LOCK_TIME;
+        return entityManager.find(cls, id, lockMode, hints);
+    }
+
+    private void applyLockOptions(TypedQuery<?> query, LockModeType lockMode, Integer lockTimeout, boolean extendScope) {
         if (lockMode != null) {
             query.setLockMode(lockMode);
-            // Ensure locks propagate to joined associations
-            query.setHint("javax.persistence.lock.scope", "EXTENDED");
+            if (extendScope) {
+                query.setHint("javax.persistence.lock.scope", "EXTENDED");
+            }
+            if (lockTimeout != null && lockTimeout > 0) {
+                query.setHint("javax.persistence.lock.timeout", lockTimeout);
+            }
         }
-        if (lockTimeout > 0) {
-            // Set lock timeout (ms)
-            query.setHint("javax.persistence.lock.timeout", lockTimeout);
-        }
-        return query.getResultList();
     }
 
     private String[] getNullPropertyNames(Object source) {

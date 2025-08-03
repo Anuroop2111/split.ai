@@ -57,3 +57,7 @@ https://github.com/angular/angular/blob/main/contributing-docs/commit-message-gu
 - Make sure to add proper Validations to the path params (@NotBlank) and to the RequestBody (@Valid)
 - Make sure to annotate the RequestBody attributes with proper annotations.
 - In case the RequestBody or ResponseBody doesn't exist, create them in the respective modules
+
+**** To be followed in Entity classes
+- Write beforeInsertOrUpdate method which does this: checks if createdAt = null, if then it sets the currentTime. It sets the updateAt with the currentTime
+- Call this methods in the dao layer before insert or update methods

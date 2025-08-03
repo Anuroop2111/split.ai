@@ -44,15 +44,15 @@ public class UserDao implements IUserDao {
     public List<UserEntity> suggestUsers(String query, Integer limit) {
         log.debug("[UserDao : suggestUsers] : query {} limit {}", query, limit);
         String sql = "SELECT * FROM users " +
-                "WHERE user_name % :query " +
-                "   OR full_name % :query " +
+                "WHERE userName % :query " +
+                "   OR fullName % :query " +
                 "   OR phone % :query " +
-                "   OR email_id % :query " +
+                "   OR emailId % :query " +
                 "ORDER BY GREATEST(" +
-                "   SIMILARITY(user_name, :query)," +
-                "   SIMILARITY(full_name, :query)," +
+                "   SIMILARITY(userName, :query)," +
+                "   SIMILARITY(fullName, :query)," +
                 "   SIMILARITY(phone, :query)," +
-                "   SIMILARITY(email_id, :query)" +
+                "   SIMILARITY(emailId, :query)" +
                 ") DESC LIMIT :limit";
         Map<String, Object> params = new HashMap<>();
         params.put("query", query);

@@ -2,6 +2,7 @@ package com.split.ai.split.service.repository.dao;
 
 import com.split.ai.split.service.repository.entity.UserEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IUserDao {
@@ -11,5 +12,7 @@ public interface IUserDao {
     void update(UserEntity entity);
 
     UserEntity findById(UUID userId);
+
+    List<UserEntity> suggestUsers(String query, Integer limit);
 
 }

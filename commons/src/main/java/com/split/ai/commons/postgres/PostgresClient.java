@@ -41,4 +41,7 @@ public interface PostgresClient {
     <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode);
 
     <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode, int lockTimeout);
+
+    <T> List<T> queryNative(String sql, Map<String, Object> params, Class<T> cls);
+
 }

@@ -26,10 +26,13 @@ public class ExpenseDao implements IExpenseDao {
     public List<ExpenseEntity> findByGroupId(UUID groupId) {
         log.debug("[ExpenseDao : findByGroupId] : {}", groupId);
         try {
-            String sql = "SELECT * FROM expenses WHERE groupId = :groupId";
+            String jpql = "SELECT e FROM ExpenseEntity e " +
+                    "JOIN FETCH e.currentRevision " +
+                    "JOIN FETCH e.group g " +
+                    "WHERE g.groupId = :groupId";
             Map<String, Object> params = new HashMap<>();
             params.put("groupId", groupId);
-            return postgresClient.queryNative(sql, params, ExpenseEntity.class);
+            return postgresClient.query(jpql, params, ExpenseEntity.class);
         } catch (Exception e) {
             log.error("[ExpenseDao : findByGroupId] : error fetching expenses for group {}", groupId, e);
             throw new RuntimeException(e);

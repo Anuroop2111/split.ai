@@ -3,7 +3,6 @@ package com.split.ai.split.service.model.request.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.split.ai.split.service.model.enums.LANGUAGE;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,17 +28,9 @@ public class UpdateUserProfileRequest implements Serializable {
 
     @NotNull
     private UUID userId;
-
-    @NotBlank
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @NotBlank
     private String emailId;
-
     private String phoneNumber;
-
     private LANGUAGE language;
 }

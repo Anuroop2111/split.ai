@@ -37,19 +37,31 @@ public class UserService implements IUserService {
 
     @Override
     public void updateProfile(UUID userId, UpdateUserProfileRequest request) {
-        UserEntity user =
-        userDao.update();
+        log.info("[UserService : updateProfile] : updating {}", userId);
+        UserEntity entity = UserServiceMapper.MAPPER.convert(request);
+        entity.setUserId(userId);
+        entity.setUpdatedAt(System.currentTimeMillis());
+        userDao.update(entity);
     }
 
     @Override
     public UserSuggestResponse suggestUsers(String query, Integer limit) {
         ValidationUtil.validateSuggestUserQuery(query);
-        return new UserSuggestResponse();
+        List<UserEntity> users = userDao.suggestUsers(query, limit);
+        return UserSuggestResponse.builder()
+                .userSuggestDtos(users.stream()
+                        .map(UserServiceMapper.MAPPER::convertToSuggest)
+                        .toList())
+                .build();
     }
 
     @Override
     public UserGroupsResponse getGroups(UUID userId, Integer page, Integer size) {
         List<GroupEntity> groups = groupDao.findByUserIdPaginated(userId, page, size);
-        return new UserGroupsResponse();
+        return UserGroupsResponse.builder()
+                .userGroups(groups.stream()
+                        .map(UserServiceMapper.MAPPER::convert)
+                        .toList())
+                .build();
     }
 }

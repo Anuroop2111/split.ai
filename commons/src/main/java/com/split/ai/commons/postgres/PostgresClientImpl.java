@@ -131,6 +131,15 @@ public class PostgresClientImpl implements PostgresClient {
         return query.getResultList();
     }
 
+    @Override
+    public <T> List<T> queryNative(String sql, Map<String, Object> params, Class<T> cls) {
+        jakarta.persistence.Query query = entityManager.createNativeQuery(sql, cls);
+        if (params != null) {
+            params.forEach(query::setParameter);
+        }
+        return query.getResultList();
+    }
+
     private <T> T doPartialUpdate(T object, LockModeType lockMode, Integer lockTimeout) {
         Class<T> cls = (Class<T>) object.getClass();
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);

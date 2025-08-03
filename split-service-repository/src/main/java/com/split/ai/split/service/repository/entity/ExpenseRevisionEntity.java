@@ -41,16 +41,17 @@ public class ExpenseRevisionEntity {
     @Id
     private UUID expenseRevisionId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "expenseId", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_rev_expense"))
-    private ExpenseEntity expense;
+    @Column(nullable = false, updatable = false)
+    private String expenseId;
 
     /* ---------- who edited/Created & when ---------- */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "editedByUserId", nullable = false,
+    @JoinColumn(name = "editedUserId", nullable = false,
             foreignKey = @ForeignKey(name = "fk_rev_user"))
-    private UserEntity editedBy;
+    private UserEntity editedByUser;
+
+    @Column(name = "editedUserId", insertable = false, updatable = false)
+    private UUID editedUserId;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -61,6 +62,9 @@ public class ExpenseRevisionEntity {
     @JoinColumn(name = "payerId", nullable = false, foreignKey =
     @ForeignKey(name = "fk_expense_payer"))
     private UserEntity payer;
+
+    @Column(name = "payerId", insertable = false, updatable = false)
+    private UUID payerId;
 
     @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal amount;

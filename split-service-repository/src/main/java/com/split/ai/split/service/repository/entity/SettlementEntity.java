@@ -33,17 +33,26 @@ public class SettlementEntity {
             foreignKey = @ForeignKey(name = "fk_settlement_group"))
     private GroupEntity group;
 
+    @Column(name = "groupId", insertable = false, updatable = false)
+    private UUID groupId;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "from_user",
+    @JoinColumn(name = "fromUserId",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk_settlement_from"))
     private UserEntity fromUser;
 
+    @Column(name = "fromUserId", insertable = false, updatable = false)
+    private UUID fromUserId;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "to_user",
+    @JoinColumn(name = "toUserId",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk_settlement_to"))
     private UserEntity toUser;
+
+    @Column(name = "toUserId", insertable = false, updatable = false)
+    private UUID toUserId;
 
     @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal amount;

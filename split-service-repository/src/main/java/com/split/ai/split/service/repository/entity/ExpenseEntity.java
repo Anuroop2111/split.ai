@@ -33,6 +33,9 @@ public class ExpenseEntity {
     @ForeignKey(name = "fk_expense_group"))
     private GroupEntity group;
 
+    @Column(name = "groupId", insertable = false, updatable = false)
+    private UUID groupId;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currentRevisionId", nullable = false, foreignKey =
     @ForeignKey(name = "fk_expense_current_rev"))

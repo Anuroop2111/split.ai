@@ -9,8 +9,10 @@ import com.split.ai.split.service.model.request.group.DeleteGroupRequest;
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
 import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
 import com.split.ai.split.service.model.request.user.UserRoleData;
+import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
+import com.split.ai.split.service.model.response.user.UserExpenseDto;
 import com.split.ai.split.service.model.response.user.UserGroupResponse;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.GroupEntity;
@@ -47,6 +49,19 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Mapping(target = "groupType", source = "newGroupType")
     GroupEntity convert(UpdateGroupRequest request);
 
+    @Mapping(target = "expenseId", source = "expense.expenseId")
+    @Mapping(target = "groupId", source = "expense.groupId")
+    @Mapping(target = "payerId", source = "currentRevision.payerId")
+    @Mapping(target = "amount", source = "currentRevision.amount")
+    @Mapping(target = "description", source = "currentRevision.description")
+    @Mapping(target = "splitMode", source = "currentRevision.splitMode")
+    @Mapping(target = "currency", source = "currentRevision.currency")
+    @Mapping(target = "category", source = "currentRevision.category")
+    @Mapping(target = "subCategory", source = "currentRevision.subCategory")
+    @Mapping(target = "expenseStatus", source = "currentRevision.expenseStatus")
+    @Mapping(target = "userExpenseDetails", source = "expense", qualifiedByName = "mapUserShares")
+    ExpenseResponse mapToExpenseResponse(ExpenseEntity expense);
+
     @Mapping(target = "userGroup", source = "group")
     @Mapping(target = "expenses", source = "expenses")
     GroupExpenseResponse convert(GroupEntity group, List<ExpenseEntity> expenses);
@@ -64,5 +79,21 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Named("defaultGroupType")
     default GroupType defaultGroupType(GroupType groupType) {
         return groupType == null ? GroupType.COMMON : groupType;
+    }
+
+    @Named("mapUserShares")
+    default List<UserExpenseDto> mapUserShares(ExpenseEntity expense) {
+        if (expense.getCurrentRevision() == null ||
+                expense.getCurrentRevision().getUserShares() == null) {
+            return null;
+        }
+        UUID expenseId = expense.getExpenseId();
+        return expense.getCurrentRevision().getUserShares().entrySet().stream()
+                .map(entry -> UserExpenseDto.builder()
+                        .expenseId(expenseId)
+                        .userId(entry.getKey())
+                        .sharedAmount(entry.getValue())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
     }
 }

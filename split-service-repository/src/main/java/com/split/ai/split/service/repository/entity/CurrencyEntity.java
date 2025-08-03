@@ -31,7 +31,4 @@ public class CurrencyEntity {
 
     private String currencySymbolUrl;
 
-    public void beforeInsertOrUpdate() {
-        // No-op for now
-    }
 }

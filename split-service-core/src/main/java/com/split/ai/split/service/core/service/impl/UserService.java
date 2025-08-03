@@ -40,7 +40,6 @@ public class UserService implements IUserService {
         log.info("[UserService : updateProfile] : updating {}", userId);
         UserEntity entity = UserServiceMapper.MAPPER.convert(request);
         entity.setUserId(userId);
-        entity.setUpdatedAt(System.currentTimeMillis());
         userDao.update(entity);
     }
 

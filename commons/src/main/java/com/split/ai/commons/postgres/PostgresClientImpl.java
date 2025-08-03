@@ -194,6 +194,38 @@ public class PostgresClientImpl implements PostgresClient {
         return query.getResultList();
     }
 
+    @Override
+    public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode) {
+        TypedQuery<T> query = entityManager.createQuery(jpql, cls);
+        if (params != null) {
+            params.forEach(query::setParameter);
+        }
+        if (lockMode != null) {
+            query.setLockMode(lockMode);
+            // Ensure locks propagate to joined associations
+            query.setHint("javax.persistence.lock.scope", "EXTENDED");
+        }
+        return query.getResultList();
+    }
+
+    @Override
+    public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode, int lockTimeout) {
+        TypedQuery<T> query = entityManager.createQuery(jpql, cls);
+        if (params != null) {
+            params.forEach(query::setParameter);
+        }
+        if (lockMode != null) {
+            query.setLockMode(lockMode);
+            // Ensure locks propagate to joined associations
+            query.setHint("javax.persistence.lock.scope", "EXTENDED");
+        }
+        if (lockTimeout > 0) {
+            // Set lock timeout (ms)
+            query.setHint("javax.persistence.lock.timeout", lockTimeout);
+        }
+        return query.getResultList();
+    }
+
     private String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         return Arrays.stream(src.getPropertyDescriptors())

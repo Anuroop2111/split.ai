@@ -37,4 +37,8 @@ public interface PostgresClient {
     <T> List<T> findAll(Class<T> cls, Map<String, Object> filters, LockModeType lockMode, int lockTimeout);
 
     <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls);
+
+    <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode);
+
+    <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode, int lockTimeout);
 }

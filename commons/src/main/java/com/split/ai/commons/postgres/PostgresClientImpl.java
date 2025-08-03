@@ -30,7 +30,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PostgresClientImpl implements PostgresClient {
 
-    private static final Map<String, Object> DEFAULT_LOCK_TIME = Map.of("javax.persistence.lock.timeout", 5);
+    private static final int DEFAULT_LOCK_TIME = 5;
 
     @PersistenceContext
     private final EntityManager entityManager;
@@ -88,12 +88,12 @@ public class PostgresClientImpl implements PostgresClient {
 
     @Override
     public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters) {
-        return findAll(cls, filters, null, null);
+        return findAll(cls, filters, null, 0);
     }
 
     @Override
     public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters, LockModeType lockMode) {
-        return findAll(cls, filters, lockMode, null);
+        return findAll(cls, filters, lockMode, DEFAULT_LOCK_TIME);
     }
 
     @Override
@@ -113,12 +113,12 @@ public class PostgresClientImpl implements PostgresClient {
 
     @Override
     public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls) {
-        return query(jpql, params, cls, null, null);
+        return query(jpql, params, cls, null, 0);
     }
 
     @Override
     public <T> List<T> query(String jpql, Map<String, Object> params, Class<T> cls, LockModeType lockMode) {
-        return query(jpql, params, cls, lockMode, null);
+        return query(jpql, params, cls, lockMode, DEFAULT_LOCK_TIME);
     }
 
     @Override
@@ -157,9 +157,10 @@ public class PostgresClientImpl implements PostgresClient {
         if (lockMode == null) {
             return entityManager.find(cls, id);
         }
-        Map<String, Object> hints = (lockTimeout != null && lockTimeout > 0)
-                ? Map.of("javax.persistence.lock.timeout", lockTimeout)
-                : DEFAULT_LOCK_TIME;
+        Map<String, Object> hints = Map.of(
+                "javax.persistence.lock.timeout",
+                (lockTimeout != null && lockTimeout > 0) ? lockTimeout : DEFAULT_LOCK_TIME
+        );
         return entityManager.find(cls, id, lockMode, hints);
     }
 
@@ -169,9 +170,10 @@ public class PostgresClientImpl implements PostgresClient {
             if (extendScope) {
                 query.setHint("javax.persistence.lock.scope", "EXTENDED");
             }
-            if (lockTimeout != null && lockTimeout > 0) {
-                query.setHint("javax.persistence.lock.timeout", lockTimeout);
-            }
+            query.setHint(
+                    "javax.persistence.lock.timeout",
+                    (lockTimeout != null && lockTimeout > 0) ? lockTimeout : DEFAULT_LOCK_TIME
+            );
         }
     }
 

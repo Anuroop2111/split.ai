@@ -33,7 +33,7 @@ public class ExpenseEntity {
     @ForeignKey(name = "fk_expense_group"))
     private GroupEntity group;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currentRevisionId", nullable = false, foreignKey =
     @ForeignKey(name = "fk_expense_current_rev"))
     private ExpenseRevisionEntity currentRevision;

@@ -26,8 +26,8 @@ public class ExpenseDao implements IExpenseDao {
     public List<ExpenseEntity> findByGroupId(UUID groupId) {
         log.debug("[ExpenseDao : findByGroupId] : {}", groupId);
         try {
+            // Since we are using EAGER fetch
             String jpql = "SELECT e FROM ExpenseEntity e " +
-                    "JOIN FETCH e.currentRevision " +
                     "JOIN FETCH e.group g " +
                     "WHERE g.groupId = :groupId";
             Map<String, Object> params = new HashMap<>();

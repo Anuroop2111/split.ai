@@ -9,7 +9,6 @@ import com.split.ai.split.service.model.request.group.DeleteGroupRequest;
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
 import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
 import com.split.ai.split.service.model.request.user.UserRoleData;
-import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
 import com.split.ai.split.service.model.response.user.UserGroupResponse;
@@ -53,10 +52,6 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     GroupExpenseResponse convert(GroupEntity group, List<ExpenseEntity> expenses);
 
     UserGroupResponse convert(GroupEntity entity);
-
-    @Mapping(target = "expenseId", source = "expenseId")
-    @Mapping(target = "groupId", source = "group.groupId")
-    ExpenseResponse convert(ExpenseEntity entity);
 
     @Mapping(target = "groupId", source = "groupId")
     @Mapping(target = "groupUserData", source = "groupUserData")

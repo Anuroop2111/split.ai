@@ -30,6 +30,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PostgresClientImpl implements PostgresClient {
 
+    private static final Map<String, Object> DEFAULT_LOCK_TIME = Map.of("javax.persistence.lock.timeout", 5);
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -53,7 +55,7 @@ public class PostgresClientImpl implements PostgresClient {
     public <T> T partialUpdate(T object, LockModeType lockMode) {
         Class<T> cls = (Class<T>) object.getClass();
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id, lockMode);
+        T existing = entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
         if (existing == null) {
             throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
         }
@@ -94,7 +96,7 @@ public class PostgresClientImpl implements PostgresClient {
     public <T> T upsert(T object, LockModeType lockMode) {
         Class<T> cls = (Class<T>) object.getClass();
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
-        T existing = entityManager.find(cls, id, lockMode);
+        T existing = entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
         if (existing == null) {
             return entityManager.merge(object);
         }
@@ -126,7 +128,7 @@ public class PostgresClientImpl implements PostgresClient {
 
     @Override
     public <T> T findById(Class<T> cls, Object id, LockModeType lockMode) {
-        return entityManager.find(cls, id, lockMode);
+        return entityManager.find(cls, id, lockMode, DEFAULT_LOCK_TIME);
     }
 
     @Override

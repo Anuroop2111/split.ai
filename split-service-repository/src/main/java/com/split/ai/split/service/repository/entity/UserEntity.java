@@ -54,4 +54,12 @@ public class UserEntity {
 
     @Column(nullable = false)
     private Long updatedAt;
+
+    public void beforeInsertOrUpdate() {
+        long now = System.currentTimeMillis();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        updatedAt = now;
+    }
 }

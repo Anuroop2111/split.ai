@@ -30,4 +30,8 @@ public class CurrencyEntity {
     private CurrencyType currency;
 
     private String currencySymbolUrl;
+
+    public void beforeInsertOrUpdate() {
+        // No-op for now
+    }
 }

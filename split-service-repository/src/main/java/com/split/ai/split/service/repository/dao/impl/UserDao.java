@@ -25,12 +25,14 @@ public class UserDao implements IUserDao {
     @Override
     public void save(UserEntity entity) {
         log.debug("[UserDao : save] : {}", entity);
+        entity.beforeInsertOrUpdate();
         postgresClient.insert(entity);
     }
 
     @Override
     public void update(UserEntity entity) {
         log.debug("[UserDao : update] : {}", entity);
+        entity.beforeInsertOrUpdate();
         postgresClient.partialUpdate(entity);
     }
 

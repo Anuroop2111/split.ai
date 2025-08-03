@@ -55,4 +55,10 @@ public class SettlementEntity {
 
     @Column(nullable = false, updatable = false)
     private Long createdAt;
+
+    public void beforeInsertOrUpdate() {
+        if (createdAt == null) {
+            createdAt = System.currentTimeMillis();
+        }
+    }
 }

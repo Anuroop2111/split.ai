@@ -100,4 +100,10 @@ public class ExpenseRevisionEntity {
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb", nullable = false)
     private Map<UUID, BigDecimal> userShares;
+
+    public void beforeInsertOrUpdate() {
+        if (editedAt == null) {
+            editedAt = System.currentTimeMillis();
+        }
+    }
 }

@@ -4,8 +4,10 @@ import com.split.ai.split.service.core.mapper.UserServiceMapper;
 import com.split.ai.split.service.core.service.IUserService;
 import com.split.ai.split.service.core.utils.ValidationUtil;
 import com.split.ai.split.service.model.request.user.UpdateUserProfileRequest;
+import com.split.ai.split.service.model.response.user.UserGroupResponse;
 import com.split.ai.split.service.model.response.user.UserGroupsResponse;
 import com.split.ai.split.service.model.response.user.UserProfileResponse;
+import com.split.ai.split.service.model.response.user.UserSuggestDto;
 import com.split.ai.split.service.model.response.user.UserSuggestResponse;
 import com.split.ai.split.service.repository.dao.IGroupDao;
 import com.split.ai.split.service.repository.dao.IUserDao;
@@ -47,12 +49,22 @@ public class UserService implements IUserService {
     public UserSuggestResponse suggestUsers(String query, Integer limit) {
         ValidationUtil.validateSuggestUserQuery(query);
         List<UserEntity> users = userDao.suggestUsers(query, limit);
-        return UserServiceMapper.MAPPER.convertToSuggestResponse(users);
+        List<UserSuggestDto> userSuggestDtos = users.stream()
+                .map(UserServiceMapper.MAPPER::convertToSuggest)
+                .toList();
+        return UserSuggestResponse.builder()
+                .userSuggestDtos(userSuggestDtos)
+                .build();
     }
 
     @Override
     public UserGroupsResponse getGroups(UUID userId, Integer page, Integer size) {
         List<GroupEntity> groups = groupDao.findByUserIdPaginated(userId, page, size);
-        return UserServiceMapper.MAPPER.convertToGroupsResponse(groups);
+        List<UserGroupResponse> userGroups = groups.stream()
+                .map(UserServiceMapper.MAPPER::convert)
+                .toList();
+        return UserGroupsResponse.builder()
+                .userGroups(userGroups)
+                .build();
     }
 }

@@ -31,5 +31,5 @@ public class UpdateGroupRequest implements Serializable {
 
     private String newGroupName;
 
-    private GroupType newGrouptType;
+    private GroupType newGroupType;
 }

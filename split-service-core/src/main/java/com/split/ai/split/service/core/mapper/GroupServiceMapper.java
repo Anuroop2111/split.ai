@@ -28,7 +28,7 @@ public interface GroupServiceMapper extends BaseServiceMapper {
 
     GroupServiceMapper MAPPER = Mappers.getMapper(GroupServiceMapper.class);
 
-    @Mapping(target = "groupId", qualifiedByName = "randomUUID")
+    @Mapping(target = "groupId", source = "request", qualifiedByName = "randomUUID")
     @Mapping(target = "groupType", source = "groupType", qualifiedByName = "defaultGroupType")
     @Mapping(target = "currency", source = "baseCurrency")
     @Mapping(target = "settleMode", expression = "java(SettleMode.NORMAL_SETTLE)")
@@ -45,7 +45,7 @@ public interface GroupServiceMapper extends BaseServiceMapper {
 
     @Mapping(target = "groupId", source = "groupId")
     @Mapping(target = "groupName", source = "newGroupName")
-    @Mapping(target = "groupType", source = "newGrouptType")
+    @Mapping(target = "groupType", source = "newGroupType")
     GroupEntity convert(UpdateGroupRequest request);
 
     @Mapping(target = "userGroup", source = "group")

@@ -43,7 +43,7 @@ public class GroupService implements IGroupService {
         log.info("[GroupService : getGroupDetails] : {}", groupId);
         GroupEntity group = groupDao.findById(groupId);
         if (group == null) {
-            return GroupServiceMapper.MAPPER.convert(null, List.of());
+            return null;
         }
         List<ExpenseEntity> expenseEntities = expenseDao.findByGroupId(groupId);
         return GroupServiceMapper.MAPPER.convert(group, expenseEntities);

@@ -2,6 +2,7 @@ package com.split.ai.commons.postgres;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -38,11 +39,41 @@ public class PostgresClientImpl implements PostgresClient {
         return object;
     }
 
+    @Override
     public <T> T partialUpdate(T object) {
         Class<T> cls = (Class<T>) object.getClass();
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
         T existing = entityManager.find(cls, id);
         if (existing == null) throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    @Override
+    public <T> T partialUpdate(T object, LockModeType lockMode) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(cls, id, lockMode);
+        if (existing == null) {
+            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+        }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    @Override
+    public <T> T partialUpdate(T object, LockModeType lockMode, int lockTimeout) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(
+                cls,
+                id,
+                lockMode,
+                Map.of("javax.persistence.lock.timeout", lockTimeout)
+        );
+        if (existing == null) {
+            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+        }
         BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
         return existing;
     }
@@ -54,15 +85,58 @@ public class PostgresClientImpl implements PostgresClient {
         T existing = entityManager.find(cls, id);
         if (existing == null) {
             return entityManager.merge(object);
-        } else {
-            BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
-            return existing;
         }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    @Override
+    public <T> T upsert(T object, LockModeType lockMode) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(cls, id, lockMode);
+        if (existing == null) {
+            return entityManager.merge(object);
+        }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
+    }
+
+    @Override
+    public <T> T upsert(T object, LockModeType lockMode, int lockTimeout) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(
+                cls,
+                id,
+                lockMode,
+                Map.of("javax.persistence.lock.timeout", lockTimeout)
+        );
+        if (existing == null) {
+            return entityManager.merge(object);
+        }
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
     }
 
     @Override
     public <T> T findById(Class<T> cls, Object id) {
         return entityManager.find(cls, id);
+    }
+
+    @Override
+    public <T> T findById(Class<T> cls, Object id, LockModeType lockMode) {
+        return entityManager.find(cls, id, lockMode);
+    }
+
+    @Override
+    public <T> T findById(Class<T> cls, Object id, LockModeType lockMode, int lockTimeout) {
+        return entityManager.find(
+                cls,
+                id,
+                lockMode,
+                Map.of("javax.persistence.lock.timeout", lockTimeout)
+        );
     }
 
     @Override
@@ -76,6 +150,37 @@ public class PostgresClientImpl implements PostgresClient {
             cq.where(predicates.toArray(new Predicate[0]));
         }
         return entityManager.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters, LockModeType lockMode) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(cls);
+        Root<T> root = cq.from(cls);
+        if (filters != null && !filters.isEmpty()) {
+            List<Predicate> predicates = new ArrayList<>();
+            filters.forEach((k, v) -> predicates.add(cb.equal(root.get(k), v)));
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+        TypedQuery<T> query = entityManager.createQuery(cq);
+        query.setLockMode(lockMode);
+        return query.getResultList();
+    }
+
+    @Override
+    public <T> List<T> findAll(Class<T> cls, Map<String, Object> filters, LockModeType lockMode, int lockTimeout) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(cls);
+        Root<T> root = cq.from(cls);
+        if (filters != null && !filters.isEmpty()) {
+            List<Predicate> predicates = new ArrayList<>();
+            filters.forEach((k, v) -> predicates.add(cb.equal(root.get(k), v)));
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+        TypedQuery<T> query = entityManager.createQuery(cq);
+        query.setLockMode(lockMode);
+        query.setHint("javax.persistence.lock.timeout", lockTimeout);
+        return query.getResultList();
     }
 
     @Override

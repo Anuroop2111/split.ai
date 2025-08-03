@@ -1,10 +1,7 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.core.mapper.GroupServiceMapper;
 import com.split.ai.split.service.core.service.IGroupService;
-import com.split.ai.split.service.model.enums.GroupStatus;
-import com.split.ai.split.service.model.enums.GroupType;
-import com.split.ai.split.service.model.enums.Role;
-import com.split.ai.split.service.model.enums.SettleMode;
 import com.split.ai.split.service.model.request.group.AddUserToGroupRequest;
 import com.split.ai.split.service.model.request.group.CreateGroupRequest;
 import com.split.ai.split.service.model.request.group.DeleteGroupRequest;
@@ -14,10 +11,8 @@ import com.split.ai.split.service.model.request.group.RemoveUserFromGroupRequest
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
 import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
 import com.split.ai.split.service.model.request.user.UserRoleData;
-import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
-import com.split.ai.split.service.model.response.user.UserGroupResponse;
 import com.split.ai.split.service.repository.dao.IExpenseDao;
 import com.split.ai.split.service.repository.dao.IGroupDao;
 import com.split.ai.split.service.repository.dao.IUserGroupDao;
@@ -30,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service handling group operations.
@@ -49,45 +43,19 @@ public class GroupService implements IGroupService {
         log.info("[GroupService : getGroupDetails] : {}", groupId);
         GroupEntity group = groupDao.findById(groupId);
         if (group == null) {
-            return GroupExpenseResponse.builder().build();
+            return GroupServiceMapper.MAPPER.convert(null, List.of());
         }
-        UserGroupResponse userGroup = UserGroupResponse.builder()
-                .groupId(group.getGroupId())
-                .groupName(group.getGroupName())
-                .groupType(group.getGroupType())
-                .settleMode(group.getSettleMode())
-                .build();
-        List<UserRoleData> members = userGroupDao.findUsersByGroupId(groupId);
         List<ExpenseEntity> expenseEntities = expenseDao.findByGroupId(groupId);
-        List<ExpenseResponse> expenses = expenseEntities.stream()
-                .map(e -> ExpenseResponse.builder()
-                        .expenseId(e.getExpenseId())
-                        .groupId(groupId)
-                        .build())
-                .collect(Collectors.toList());
-        return GroupExpenseResponse.builder()
-                .userGroup(userGroup)
-                .expenses(expenses)
-                .build();
+        return GroupServiceMapper.MAPPER.convert(group, expenseEntities);
     }
 
     @Override
     public void createGroup(CreateGroupRequest request) {
         log.info("[GroupService : createGroup] : {}", request);
-        GroupEntity entity = GroupEntity.builder()
-                .groupId(UUID.randomUUID())
-                .groupName(request.getGroupName())
-                .groupType(request.getGroupType() == null ? GroupType.COMMON : request.getGroupType())
-                .currency(request.getBaseCurrency())
-                .settleMode(SettleMode.NORMAL_SETTLE)
-                .groupStatus(GroupStatus.ACTIVE)
-                .build();
+        GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.save(entity);
         List<UserRoleData> members = new ArrayList<>();
-        members.add(UserRoleData.builder()
-                .userId(request.getUserInitiated())
-                .role(Role.ADMIN)
-                .build());
+        members.add(GroupServiceMapper.MAPPER.createAdmin(request.getUserInitiated()));
         if (request.getAdditionalUserData() != null) {
             members.addAll(request.getAdditionalUserData());
         }
@@ -109,10 +77,7 @@ public class GroupService implements IGroupService {
     @Override
     public void toggleSettleMode(ToggleGroupSettleMode request) {
         log.info("[GroupService : toggleSettleMode] : {}", request);
-        GroupEntity entity = GroupEntity.builder()
-                .groupId(request.getGroupId())
-                .settleMode(request.getSettleMode())
-                .build();
+        GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.update(entity);
     }
 
@@ -125,25 +90,14 @@ public class GroupService implements IGroupService {
     @Override
     public void deleteGroup(DeleteGroupRequest request) {
         log.info("[GroupService : deleteGroup] : {}", request);
-        GroupEntity entity = GroupEntity.builder()
-                .groupId(request.getGroupId())
-                .groupStatus(GroupStatus.DELETED)
-                .build();
+        GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.update(entity);
     }
 
     @Override
     public void updateGroup(UpdateGroupRequest request) {
         log.info("[GroupService : updateGroup] : {}", request);
-        GroupEntity entity = GroupEntity.builder()
-                .groupId(request.getGroupId())
-                .build();
-        if (request.getNewGroupName() != null) {
-            entity.setGroupName(request.getNewGroupName());
-        }
-        if (request.getNewGrouptType() != null) {
-            entity.setGroupType(request.getNewGrouptType());
-        }
+        GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.update(entity);
     }
 
@@ -157,9 +111,6 @@ public class GroupService implements IGroupService {
     public GroupUserResponse getMembers(UUID groupId) {
         log.info("[GroupService : getMembers] : {}", groupId);
         List<UserRoleData> members = userGroupDao.findUsersByGroupId(groupId);
-        return GroupUserResponse.builder()
-                .groupId(groupId)
-                .groupUserData(members)
-                .build();
+        return GroupServiceMapper.MAPPER.convert(groupId, members);
     }
 }

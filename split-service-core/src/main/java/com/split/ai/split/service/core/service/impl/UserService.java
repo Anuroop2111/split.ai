@@ -47,20 +47,12 @@ public class UserService implements IUserService {
     public UserSuggestResponse suggestUsers(String query, Integer limit) {
         ValidationUtil.validateSuggestUserQuery(query);
         List<UserEntity> users = userDao.suggestUsers(query, limit);
-        return UserSuggestResponse.builder()
-                .userSuggestDtos(users.stream()
-                        .map(UserServiceMapper.MAPPER::convertToSuggest)
-                        .toList())
-                .build();
+        return UserServiceMapper.MAPPER.convertToSuggestResponse(users);
     }
 
     @Override
     public UserGroupsResponse getGroups(UUID userId, Integer page, Integer size) {
         List<GroupEntity> groups = groupDao.findByUserIdPaginated(userId, page, size);
-        return UserGroupsResponse.builder()
-                .userGroups(groups.stream()
-                        .map(UserServiceMapper.MAPPER::convert)
-                        .toList())
-                .build();
+        return UserServiceMapper.MAPPER.convertToGroupsResponse(groups);
     }
 }

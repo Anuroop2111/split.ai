@@ -28,8 +28,7 @@ public class UpdateUserProfileRequest implements Serializable {
 
     @NotNull
     private UUID userId;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String emailId;
     private String phoneNumber;
     private LANGUAGE language;

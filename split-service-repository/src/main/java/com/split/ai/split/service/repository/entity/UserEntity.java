@@ -31,9 +31,7 @@ public class UserEntity {
     private UUID userId;
 
     @Column(nullable = false)
-    private String firstName;
-
-    private String lastName;
+    private String fullName;
 
     @Column(nullable = false)
     private String userName;

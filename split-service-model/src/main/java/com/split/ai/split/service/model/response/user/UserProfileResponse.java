@@ -27,8 +27,7 @@ public class UserProfileResponse implements Serializable {
 
     private String userId;
     private String emailId;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String userName;
     private UserStatus userStatus;
     private LANGUAGE language;

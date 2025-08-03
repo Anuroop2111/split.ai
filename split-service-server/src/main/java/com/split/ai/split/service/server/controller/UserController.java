@@ -47,15 +47,15 @@ public class UserController {
 
     @GetMapping("/suggest")
     public ResponseEntity<UserSuggestResponse> suggestUsers(@RequestParam("query") String query,
-                                                            @RequestParam(value = "limit", required = false) Integer limit) {
+                                                            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
         log.info("[UserController : suggestUsers] : query {}", query);
         return ResponseEntity.ok(userService.suggestUsers(query, limit));
     }
 
     @GetMapping("/{userId}/groups")
     public ResponseEntity<UserGroupsResponse> getUserGroups(@PathVariable @NotBlank String userId,
-                                                            @RequestParam(value = "page", required = false) Integer page,
-                                                            @RequestParam(value = "size", required = false) Integer size) {
+                                                            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         log.info("[UserController : getUserGroups] : groups for {}", userId);
         return ResponseEntity.ok(userService.getGroups(UUID.fromString(userId), page, size));
     }

@@ -25,12 +25,14 @@ public class GroupDao implements IGroupDao {
     @Override
     public void save(GroupEntity entity) {
         log.debug("[GroupDao : save] : {}", entity);
+        entity.beforeInsertOrUpdate();
         postgresClient.insert(entity);
     }
 
     @Override
     public void update(GroupEntity entity) {
         log.debug("[GroupDao : update] : {}", entity);
+        entity.beforeInsertOrUpdate();
         postgresClient.partialUpdate(entity);
     }
 

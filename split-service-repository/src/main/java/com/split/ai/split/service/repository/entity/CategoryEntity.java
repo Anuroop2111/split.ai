@@ -31,4 +31,8 @@ public class CategoryEntity {
     private Category category;
 
     private String subCategoryImageUrl;
+
+    public void beforeInsertOrUpdate() {
+        // No-op for now
+    }
 }

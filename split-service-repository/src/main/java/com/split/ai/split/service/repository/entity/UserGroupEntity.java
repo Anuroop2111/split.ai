@@ -28,4 +28,10 @@ public class UserGroupEntity {
     private Role role;
 
     private Long createdAt;
+
+    public void beforeInsertOrUpdate() {
+        if (createdAt == null) {
+            createdAt = System.currentTimeMillis();
+        }
+    }
 }

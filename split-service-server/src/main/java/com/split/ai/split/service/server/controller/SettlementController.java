@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * Controller for handling settlements.
  */
@@ -36,6 +38,6 @@ public class SettlementController {
     @GetMapping("/{settlementId}")
     public ResponseEntity<SettlementResponse> getSettlement(@PathVariable @NotBlank String settlementId) {
         log.info("[SettlementController : getSettlement] : {}", settlementId);
-        return ResponseEntity.ok(settlementService.getSettlement(settlementId));
+        return ResponseEntity.ok(settlementService.getSettlement(UUID.fromString(settlementId)));
     }
 }

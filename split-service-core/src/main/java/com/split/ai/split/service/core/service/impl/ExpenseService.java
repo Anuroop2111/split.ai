@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Service handling expense operations.
  */
@@ -17,8 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class ExpenseService implements IExpenseService {
+
     @Override
-    public ExpenseResponse getExpense(String expenseId) {
+    public ExpenseResponse getExpense(UUID expenseId) {
         return new ExpenseResponse();
     }
 
@@ -38,7 +41,7 @@ public class ExpenseService implements IExpenseService {
     }
 
     @Override
-    public ExpenseHistoryResponse getHistory(String expenseId) {
+    public ExpenseHistoryResponse getHistory(UUID expenseId) {
         return new ExpenseHistoryResponse();
     }
 }

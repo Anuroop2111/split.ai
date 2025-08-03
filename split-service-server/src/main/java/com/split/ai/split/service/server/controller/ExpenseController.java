@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * Controller for expense related operations.
  */
@@ -33,7 +35,7 @@ public class ExpenseController {
     @GetMapping("/get/{expenseId}")
     public ResponseEntity<ExpenseResponse> getExpense(@PathVariable @NotBlank String expenseId) {
         log.info("[ExpenseController : getExpense] : {}", expenseId);
-        return ResponseEntity.ok(expenseService.getExpense(expenseId));
+        return ResponseEntity.ok(expenseService.getExpense(UUID.fromString(expenseId)));
     }
 
     @PostMapping("/create")
@@ -60,6 +62,6 @@ public class ExpenseController {
     @GetMapping("/{expenseId}/history")
     public ResponseEntity<ExpenseHistoryResponse> getExpenseHistory(@PathVariable @NotBlank String expenseId) {
         log.info("[ExpenseController : getExpenseHistory] : {}", expenseId);
-        return ResponseEntity.ok(expenseService.getHistory(expenseId));
+        return ResponseEntity.ok(expenseService.getHistory(UUID.fromString(expenseId)));
     }
 }

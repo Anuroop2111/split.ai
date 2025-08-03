@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * Controller handling user related operations.
  */
@@ -32,14 +34,14 @@ public class UserController {
     @GetMapping("/profile/{userId}")
     public ResponseEntity<UserProfileResponse> getProfile(@PathVariable @NotBlank String userId) {
         log.info("[UserController : getProfile] : fetching profile for {}", userId);
-        return ResponseEntity.ok(userService.getProfile(userId));
+        return ResponseEntity.ok(userService.getProfile(UUID.fromString(userId)));
     }
 
     @PatchMapping("/update/{userId}")
     public ResponseEntity<Void> updateProfile(@PathVariable @NotBlank String userId,
                                               @Valid @RequestBody UpdateUserProfileRequest request) {
         log.info("[UserController : updateProfile] : updating profile {}", request);
-        userService.updateProfile(userId, request);
+        userService.updateProfile(UUID.fromString(userId), request);
         return ResponseEntity.ok().build();
     }
 
@@ -55,6 +57,6 @@ public class UserController {
                                                             @RequestParam(value = "page", required = false) Integer page,
                                                             @RequestParam(value = "size", required = false) Integer size) {
         log.info("[UserController : getUserGroups] : groups for {}", userId);
-        return ResponseEntity.ok(userService.getGroups(userId, page, size));
+        return ResponseEntity.ok(userService.getGroups(UUID.fromString(userId), page, size));
     }
 }

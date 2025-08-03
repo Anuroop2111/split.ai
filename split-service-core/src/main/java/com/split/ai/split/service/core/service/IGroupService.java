@@ -14,6 +14,7 @@ import com.split.ai.split.service.model.response.group.GroupUserResponse;
 import java.util.UUID;
 
 public interface IGroupService {
+
     GroupExpenseResponse getGroupDetails(UUID groupId);
 
     void createGroup(CreateGroupRequest request);

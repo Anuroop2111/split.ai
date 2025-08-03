@@ -24,6 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupService implements IGroupService {
+
     @Override
     public GroupExpenseResponse getGroupDetails(UUID groupId) {
         return new GroupExpenseResponse();

@@ -6,8 +6,11 @@ import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
 import com.split.ai.split.service.model.response.expense.ExpenseHistoryResponse;
 import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 
+import java.util.UUID;
+
 public interface IExpenseService {
-    ExpenseResponse getExpense(String expenseId);
+
+    ExpenseResponse getExpense(UUID expenseId);
 
     void createExpense(CreateExpenseRequest request);
 
@@ -15,5 +18,5 @@ public interface IExpenseService {
 
     void deleteExpense(DeleteExpenseRequest request);
 
-    ExpenseHistoryResponse getHistory(String expenseId);
+    ExpenseHistoryResponse getHistory(UUID expenseId);
 }

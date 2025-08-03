@@ -46,9 +46,9 @@ public class GroupDao implements IGroupDao {
     public List<GroupEntity> findByUserIdPaginated(UUID userId, Integer page, Integer size) {
         log.debug("[GroupDao : findByUserIdPaginated] : user {} page {} size {}", userId, page, size);
         String sql = "SELECT g.* FROM groups g " +
-                "JOIN user_group ug ON g.group_id = ug.group_id " +
-                "WHERE ug.user_id = :userId " +
-                "ORDER BY g.created_at DESC " +
+                "JOIN user_group ug ON g.groupId = ug.groupId " +
+                "WHERE ug.userId = :userId " +
+                "ORDER BY g.createdAt DESC " +
                 "LIMIT :limit OFFSET :offset";
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);

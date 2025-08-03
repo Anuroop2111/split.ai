@@ -26,7 +26,7 @@ public class ExpenseDao implements IExpenseDao {
     public List<ExpenseEntity> findByGroupId(UUID groupId) {
         log.debug("[ExpenseDao : findByGroupId] : {}", groupId);
         try {
-            String sql = "SELECT * FROM expense WHERE group_id = :groupId";
+            String sql = "SELECT * FROM expenses WHERE groupId = :groupId";
             Map<String, Object> params = new HashMap<>();
             params.put("groupId", groupId);
             return postgresClient.queryNative(sql, params, ExpenseEntity.class);

@@ -1,6 +1,7 @@
 package com.split.ai.commons.postgres;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -8,10 +9,15 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,14 +38,26 @@ public class PostgresClientImpl implements PostgresClient {
         return object;
     }
 
-    @Override
-    public <T> T update(T object) {
-        return entityManager.merge(object);
+    public <T> T partialUpdate(T object) {
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(cls, id);
+        if (existing == null) throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+        BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+        return existing;
     }
 
     @Override
     public <T> T upsert(T object) {
-        return entityManager.merge(object);
+        Class<T> cls = (Class<T>) object.getClass();
+        Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
+        T existing = entityManager.find(cls, id);
+        if (existing == null) {
+            return entityManager.merge(object);
+        } else {
+            BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
+            return existing;
+        }
     }
 
     @Override
@@ -67,5 +85,13 @@ public class PostgresClientImpl implements PostgresClient {
             params.forEach(query::setParameter);
         }
         return query.getResultList();
+    }
+
+    private String[] getNullPropertyNames(Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        return Arrays.stream(src.getPropertyDescriptors())
+                .map(PropertyDescriptor::getName)
+                .filter(name -> src.getPropertyValue(name) == null)
+                .toArray(String[]::new);
     }
 }

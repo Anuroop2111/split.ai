@@ -1,5 +1,6 @@
 package com.split.ai.split.service.core.mapper;
 
+import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.DeleteExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
@@ -28,16 +29,16 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     ExpenseServiceMapper MAPPER = Mappers.getMapper(ExpenseServiceMapper.class);
 
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
-    @Mapping(target = "expenseId", expression = "java(expenseId.toString())")
+    @Mapping(target = "expenseId", source = "expenseId", qualifiedByName = "uuidToString")
     @Mapping(target = "editedUserId", source = "payerId")
     @Mapping(target = "payerId", source = "payerId")
     @Mapping(target = "amount", source = "amount")
-    @Mapping(target = "expenseDate", expression = "java(System.currentTimeMillis())")
+    @Mapping(target = "expenseDate", source = "request", qualifiedByName = "currentEpochTime")
     @Mapping(target = "splitMode", source = "splitMode")
     @Mapping(target = "currency", source = "currency")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "subCategory", source = "subCategory")
-    @Mapping(target = "expenseStatus", expression = "java(com.split.ai.split.service.model.enums.ExpenseStatus.PENDING)")
+    @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "userShares", source = "userExpenseDetails", qualifiedByName = "mapUserExpenseDto")
     ExpenseRevisionEntity toRevisionEntity(CreateExpenseRequest request, UUID expenseId);
@@ -48,7 +49,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     ExpenseEntity toExpenseEntity(UUID expenseId, CreateExpenseRequest request, ExpenseRevisionEntity revision);
 
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
-    @Mapping(target = "expenseId", expression = "java(request.getExpenseId().toString())")
+    @Mapping(target = "expenseId", source = "request.expenseId", qualifiedByName = "uuidToString")
     @Mapping(target = "editedUserId", source = "editedBy")
     @Mapping(target = "payerId", source = "payer")
     @Mapping(target = "amount", source = "amount")
@@ -57,7 +58,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "currency", source = "currency")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "subCategory", source = "subCategory")
-    @Mapping(target = "expenseStatus", expression = "java(com.split.ai.split.service.model.enums.ExpenseStatus.PENDING)")
+    @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "metaData", source = "metaData")
     @Mapping(target = "userShares", source = "userExpenseDetails", qualifiedByName = "mapUserExpenseData")
@@ -73,7 +74,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "currency", source = "current.currency")
     @Mapping(target = "category", source = "current.category")
     @Mapping(target = "subCategory", source = "current.subCategory")
-    @Mapping(target = "expenseStatus", expression = "java(com.split.ai.split.service.model.enums.ExpenseStatus.CANCELLED)")
+    @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "cancelledExpenseStatus")
     @Mapping(target = "description", source = "current.description")
     @Mapping(target = "metaData", source = "current.metaData")
     @Mapping(target = "userShares", source = "current.userShares")
@@ -112,6 +113,16 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "metaDataNew", source = "metaData")
     @Mapping(target = "userSharesNew", source = "userShares")
     ExpenseEditDto toExpenseEditDto(ExpenseRevisionEntity entity);
+
+    @Named("pendingExpenseStatus")
+    default ExpenseStatus pendingExpenseStatus(Object src) {
+        return ExpenseStatus.PENDING;
+    }
+
+    @Named("cancelledExpenseStatus")
+    default ExpenseStatus cancelledExpenseStatus(Object src) {
+        return ExpenseStatus.CANCELLED;
+    }
 
     @Named("mapUserExpenseDto")
     default Map<UUID, BigDecimal> mapUserExpenseDto(List<UserExpenseDto> details) {

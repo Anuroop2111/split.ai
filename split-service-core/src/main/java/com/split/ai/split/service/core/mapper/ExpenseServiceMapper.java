@@ -29,18 +29,18 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     ExpenseServiceMapper MAPPER = Mappers.getMapper(ExpenseServiceMapper.class);
 
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
-    @Mapping(target = "expenseId", source = "expenseId", qualifiedByName = "uuidToString")
-    @Mapping(target = "editedUserId", source = "payerId")
-    @Mapping(target = "payerId", source = "payerId")
-    @Mapping(target = "amount", source = "amount")
+    @Mapping(target = "editedUserId", source = "request.payerId")
+    @Mapping(target = "expenseId", source = "expenseId")
+    @Mapping(target = "payerId", source = "request.payerId")
+    @Mapping(target = "amount", source = "request.amount")
     @Mapping(target = "expenseDate", source = "request", qualifiedByName = "currentEpochTime")
-    @Mapping(target = "splitMode", source = "splitMode")
-    @Mapping(target = "currency", source = "currency")
-    @Mapping(target = "category", source = "category")
-    @Mapping(target = "subCategory", source = "subCategory")
+    @Mapping(target = "splitMode", source = "request.splitMode")
+    @Mapping(target = "currency", source = "request.currency")
+    @Mapping(target = "category", source = "request.category")
+    @Mapping(target = "subCategory", source = "request.subCategory")
     @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "userShares", source = "userExpenseDetails", qualifiedByName = "mapUserExpenseDto")
+    @Mapping(target = "description", source = "request.description")
+    @Mapping(target = "userShares", source = "request.userExpenseDetails", qualifiedByName = "mapUserExpenseDto")
     ExpenseRevisionEntity toRevisionEntity(CreateExpenseRequest request, UUID expenseId);
 
     @Mapping(target = "expenseId", source = "expenseId")
@@ -51,7 +51,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
     @Mapping(target = "expenseId", source = "request.expenseId", qualifiedByName = "uuidToString")
     @Mapping(target = "editedUserId", source = "editedBy")
-    @Mapping(target = "payerId", source = "payer")
+    @Mapping(target = "payerId", source = "request.payerId")
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "expenseDate", source = "expenseDate")
     @Mapping(target = "splitMode", source = "splitMode")
@@ -97,9 +97,6 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "createdAt", source = "expense.createdAt")
     @Mapping(target = "userExpenseDetails", source = "currentRevision.userShares", qualifiedByName = "mapUserSharesToDtos")
     ExpenseResponse toExpenseResponse(ExpenseEntity expense);
-
-    @Mapping(target = "expenseEditList", source = "revisions")
-    ExpenseHistoryResponse toHistoryResponse(List<ExpenseRevisionEntity> revisions);
 
     @Mapping(target = "editedBy", source = "editedUserId")
     @Mapping(target = "payerNew", source = "payerId")

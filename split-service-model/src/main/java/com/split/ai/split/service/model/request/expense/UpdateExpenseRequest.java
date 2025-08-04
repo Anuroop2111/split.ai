@@ -35,7 +35,7 @@ public class UpdateExpenseRequest implements Serializable {
     @NotNull
     private UUID editedBy;
 
-    private UUID payer;
+    private UUID payerId;
     private BigDecimal amount;
     private Long expenseDate;
     private SplitMode splitMode;

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -68,6 +69,11 @@ public class ExpenseService implements IExpenseService {
     @Override
     public ExpenseHistoryResponse getHistory(UUID expenseId) {
         log.info("[ExpenseService : getHistory] : {}", expenseId);
-        return ExpenseServiceMapper.MAPPER.toHistoryResponse(expenseDao.findRevisions(expenseId));
+        List<ExpenseRevisionEntity> expenseRevisionEntityList =  expenseDao.findRevisions(expenseId);
+        return ExpenseHistoryResponse.builder()
+                .expenseEditList(expenseRevisionEntityList.stream()
+                        .map(ExpenseServiceMapper.MAPPER::toExpenseEditDto)
+                        .toList())
+                .build();
     }
 }

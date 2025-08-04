@@ -74,7 +74,8 @@ public class ExpenseDao implements IExpenseDao {
     public List<ExpenseRevisionEntity> findRevisions(UUID expenseId) {
         log.debug("[ExpenseDao : findRevisions] : {}", expenseId);
         try {
-            String jpql = "SELECT er FROM ExpenseRevisionEntity er WHERE er.expenseId = :expenseId ORDER BY er.editedAt DESC";
+            String jpql = "SELECT er FROM ExpenseRevisionEntity er WHERE er.expenseId = :expenseId " +
+                    "ORDER BY er.editedAt DESC"; // ensure latest revisions come first
             Map<String, Object> params = new HashMap<>();
             params.put("expenseId", expenseId.toString());
             return postgresClient.query(jpql, params, ExpenseRevisionEntity.class);

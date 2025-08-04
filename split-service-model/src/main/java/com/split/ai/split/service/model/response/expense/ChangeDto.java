@@ -9,12 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.UUID;
 
 /**
- * DTO capturing one edit history entry of an expense.
+ * DTO representing a change with old and new values.
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,14 +19,10 @@ import java.util.UUID;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExpenseEditDto implements Serializable {
+public class ChangeDto implements Serializable {
     @Serial
-    private static final long serialVersionUID = -7338268945012745668L;
+    private static final long serialVersionUID = 3037801079987312055L;
 
-    private UUID editedBy;
-    private Long editedAt;
-
-    private Map<String, ChangeDto> changes;
-    private Map<UUID, BigDecimal> userSharesOld;
-    private Map<UUID, BigDecimal> userSharesNew;
+    private String oldValue;
+    private String newValue;
 }

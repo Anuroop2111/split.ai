@@ -5,8 +5,6 @@ import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.DeleteExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UserExpenseData;
-import com.split.ai.split.service.model.response.expense.ExpenseEditDto;
-import com.split.ai.split.service.model.response.expense.ExpenseHistoryResponse;
 import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.model.response.user.UserExpenseDto;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
@@ -97,19 +95,6 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "createdAt", source = "expense.createdAt")
     @Mapping(target = "userExpenseDetails", source = "currentRevision.userShares", qualifiedByName = "mapUserSharesToDtos")
     ExpenseResponse toExpenseResponse(ExpenseEntity expense);
-
-    @Mapping(target = "editedBy", source = "editedUserId")
-    @Mapping(target = "payerNew", source = "payerId")
-    @Mapping(target = "amountNew", source = "amount")
-    @Mapping(target = "expenseDateNew", source = "expenseDate")
-    @Mapping(target = "splitModeNew", source = "splitMode")
-    @Mapping(target = "currencyNew", source = "currency")
-    @Mapping(target = "categoryNew", source = "category")
-    @Mapping(target = "subCategoryNew", source = "subCategory")
-    @Mapping(target = "descriptionNew", source = "description")
-    @Mapping(target = "metaDataNew", source = "metaData")
-    @Mapping(target = "userSharesNew", source = "userShares")
-    ExpenseEditDto toExpenseEditDto(ExpenseRevisionEntity entity);
 
     @Named("pendingExpenseStatus")
     default ExpenseStatus pendingExpenseStatus(Object src) {

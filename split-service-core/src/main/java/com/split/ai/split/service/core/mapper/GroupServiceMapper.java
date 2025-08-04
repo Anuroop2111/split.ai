@@ -24,7 +24,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 import java.util.UUID;
 
-@Mapper(imports = {SettleMode.class, GroupStatus.class, Role.class, GroupType.class})
+@Mapper
 public interface GroupServiceMapper extends BaseServiceMapper {
 
     GroupServiceMapper MAPPER = Mappers.getMapper(GroupServiceMapper.class);
@@ -32,8 +32,8 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Mapping(target = "groupId", source = "request", qualifiedByName = "randomUUID")
     @Mapping(target = "groupType", source = "groupType", qualifiedByName = "defaultGroupType")
     @Mapping(target = "currency", source = "baseCurrency")
-    @Mapping(target = "settleMode", expression = "java(SettleMode.NORMAL_SETTLE)")
-    @Mapping(target = "groupStatus", expression = "java(GroupStatus.ACTIVE)")
+    @Mapping(target = "settleMode", source = "request", qualifiedByName = "normalSettleMode")
+    @Mapping(target = "groupStatus", source = "request", qualifiedByName = "activeGroupStatus")
     GroupEntity convert(CreateGroupRequest request);
 
     @Mapping(target = "groupId", source = "groupId")
@@ -41,7 +41,7 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     GroupEntity convert(ToggleGroupSettleMode request);
 
     @Mapping(target = "groupId", source = "groupId")
-    @Mapping(target = "groupStatus", expression = "java(GroupStatus.DELETED)")
+    @Mapping(target = "groupStatus", source = "request", qualifiedByName = "deletedGroupStatus")
     GroupEntity convert(DeleteGroupRequest request);
 
     @Mapping(target = "groupId", source = "groupId")
@@ -73,12 +73,32 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     GroupUserResponse convert(UUID groupId, List<UserRoleData> groupUserData);
 
     @Mapping(target = "userId", source = "userId")
-    @Mapping(target = "role", expression = "java(Role.ADMIN)")
+    @Mapping(target = "role", source = "userId", qualifiedByName = "adminRole")
     UserRoleData createAdmin(UUID userId);
 
     @Named("defaultGroupType")
     default GroupType defaultGroupType(GroupType groupType) {
         return groupType == null ? GroupType.COMMON : groupType;
+    }
+
+    @Named("normalSettleMode")
+    default SettleMode normalSettleMode(Object src) {
+        return SettleMode.NORMAL_SETTLE;
+    }
+
+    @Named("activeGroupStatus")
+    default GroupStatus activeGroupStatus(Object src) {
+        return GroupStatus.ACTIVE;
+    }
+
+    @Named("deletedGroupStatus")
+    default GroupStatus deletedGroupStatus(Object src) {
+        return GroupStatus.DELETED;
+    }
+
+    @Named("adminRole")
+    default Role adminRole(Object src) {
+        return Role.ADMIN;
     }
 
     @Named("mapUserShares")

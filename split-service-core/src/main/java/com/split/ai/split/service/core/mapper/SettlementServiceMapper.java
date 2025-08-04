@@ -18,7 +18,7 @@ public interface SettlementServiceMapper extends BaseServiceMapper {
     @Mapping(target = "toUserId", source = "receiverId")
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "currencyType", source = "currency")
-    @Mapping(target = "createdAt", expression = "java(System.currentTimeMillis())")
+    @Mapping(target = "createdAt", source = "request", qualifiedByName = "currentEpochTime")
     SettlementEntity toEntity(SettlementRequest request);
 
     @Mapping(target = "settlementId", source = "settlementId")

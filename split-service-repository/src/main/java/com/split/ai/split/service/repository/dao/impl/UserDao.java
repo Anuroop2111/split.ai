@@ -32,7 +32,7 @@ public class UserDao implements IUserDao {
     @Override
     public void update(UserEntity entity) {
         log.debug("[UserDao : update] : {}", entity);
-        entity.beforeInsertOrUpdate();
+        entity.beforeUpdate();
         postgresClient.partialUpdate(entity);
     }
 

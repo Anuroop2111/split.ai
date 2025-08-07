@@ -39,7 +39,7 @@ public class ExpenseDao implements IExpenseDao {
     public void update(ExpenseEntity entity) {
         log.debug("[ExpenseDao : update] : {}", entity);
         try {
-            entity.beforeInsertOrUpdate();
+            entity.beforeUpdate();
             postgresClient.partialUpdate(entity);
         } catch (Exception e) {
             log.error("[ExpenseDao : update] : error updating expense {}", entity.getExpenseId(), e);

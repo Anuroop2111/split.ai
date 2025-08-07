@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.split.ai.split.service.model.enums.*;
 import com.split.ai.split.service.model.request.split.SplitRequest;
 import com.split.ai.split.service.model.response.user.UserExpenseDto;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,25 +31,21 @@ public class CreateExpenseRequest implements Serializable {
     @Serial
     private static final long serialVersionUID = -7926909423475367034L;
 
+    @NotBlank
     private UUID groupId;
-
     private String description;
-
     @NotNull
     private BigDecimal amount;
-
     @NotNull
     private UUID payerId;
-
+    @NotBlank
+    private UUID userId;
     private SplitMode splitMode;
-
     private CurrencyType currency;
-
     private SubCategory subCategory;
-
     private Category category;
-
     private List<UserExpenseDto> userExpenseDetails;
-
     private SplitRequest splitRequest;
+    private Long expenseDate;
+    private String metaData;
 }

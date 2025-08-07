@@ -62,4 +62,8 @@ public class UserEntity {
         }
         updatedAt = now;
     }
+
+    public void beforeUpdate() {
+        updatedAt = System.currentTimeMillis();
+    }
 }

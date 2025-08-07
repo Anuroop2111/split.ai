@@ -56,4 +56,8 @@ public class ExpenseEntity {
         }
         updatedAt = now;
     }
+
+    public void beforeUpdate() {
+        updatedAt = System.currentTimeMillis();
+    }
 }

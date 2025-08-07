@@ -60,4 +60,8 @@ public class GroupEntity {
         }
         updatedAt = now;
     }
+
+    public void beforeUpdate() {
+        updatedAt = System.currentTimeMillis();
+    }
 }

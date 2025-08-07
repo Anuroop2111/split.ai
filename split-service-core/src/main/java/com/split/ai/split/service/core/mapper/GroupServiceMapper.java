@@ -107,10 +107,8 @@ public interface GroupServiceMapper extends BaseServiceMapper {
                 expense.getCurrentRevision().getUserShares() == null) {
             return null;
         }
-        UUID expenseId = expense.getExpenseId();
         return expense.getCurrentRevision().getUserShares().entrySet().stream()
                 .map(entry -> UserExpenseDto.builder()
-                        .expenseId(expenseId)
                         .userId(entry.getKey())
                         .sharedAmount(entry.getValue())
                         .build())

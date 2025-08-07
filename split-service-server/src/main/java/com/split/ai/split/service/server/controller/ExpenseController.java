@@ -33,9 +33,9 @@ public class ExpenseController {
     private final IExpenseService expenseService;
 
     @GetMapping("/get/{expenseId}")
-    public ResponseEntity<ExpenseResponse> getExpense(@PathVariable @NotBlank String expenseId) {
+    public ResponseEntity<ExpenseResponse> getExpense(@PathVariable @NotBlank UUID expenseId) {
         log.info("[ExpenseController : getExpense] : {}", expenseId);
-        return ResponseEntity.ok(expenseService.getExpense(UUID.fromString(expenseId)));
+        return ResponseEntity.ok(expenseService.getExpense(expenseId));
     }
 
     @PostMapping("/create")

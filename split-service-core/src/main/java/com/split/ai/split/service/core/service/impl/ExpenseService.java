@@ -38,7 +38,7 @@ public class ExpenseService implements IExpenseService {
     public ExpenseResponse getExpense(UUID expenseId) {
         log.info("[ExpenseService : getExpense] : {}", expenseId);
         ExpenseEntity entity = expenseDao.findById(expenseId);
-        return entity == null ? null : ExpenseServiceMapper.MAPPER.toExpenseResponse(entity);
+        return ExpenseServiceMapper.MAPPER.toExpenseResponse(entity);
     }
 
     @Override
@@ -54,6 +54,7 @@ public class ExpenseService implements IExpenseService {
     @Override
     public void updateExpense(UpdateExpenseRequest request) {
         log.info("[ExpenseService : updateExpense] : {}", request);
+
         ExpenseRevisionEntity revision = ExpenseServiceMapper.MAPPER.toRevisionEntity(request);
         expenseDao.saveRevision(revision);
         ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(request.getExpenseId(), revision);

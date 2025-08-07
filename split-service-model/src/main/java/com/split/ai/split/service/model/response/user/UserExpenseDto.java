@@ -25,7 +25,6 @@ public class UserExpenseDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -7268079979190168183L;
 
-    private UUID expenseId;
     private UUID userId;
     private BigDecimal sharedAmount;
 }

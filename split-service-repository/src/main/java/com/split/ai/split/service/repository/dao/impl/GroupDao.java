@@ -32,7 +32,7 @@ public class GroupDao implements IGroupDao {
     @Override
     public void update(GroupEntity entity) {
         log.debug("[GroupDao : update] : {}", entity);
-        entity.beforeInsertOrUpdate();
+        entity.beforeUpdate();
         postgresClient.partialUpdate(entity);
     }
 

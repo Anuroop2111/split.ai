@@ -26,12 +26,20 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
 
     ExpenseServiceMapper MAPPER = Mappers.getMapper(ExpenseServiceMapper.class);
 
-    @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
-    @Mapping(target = "editedUserId", source = "request.payerId")
     @Mapping(target = "expenseId", source = "expenseId")
+    @Mapping(target = "group", source = "request.groupId", qualifiedByName = "getGroup")
+    @Mapping(target = "groupId", source = "request.groupId")
+    @Mapping(target = "currentRevision", source = "revision")
+    ExpenseEntity toExpenseEntity(UUID expenseId, CreateExpenseRequest request, ExpenseRevisionEntity revision);
+
+    @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
+    @Mapping(target = "editedByUser", source = "request.userId", qualifiedByName = "getUser")
+    @Mapping(target = "editedUserId", source = "request.userId")
+    @Mapping(target = "editedAt", source = "request", qualifiedByName = "currentEpochTime")
+    @Mapping(target = "payer", source = "request.payerId", qualifiedByName = "getUser")
     @Mapping(target = "payerId", source = "request.payerId")
     @Mapping(target = "amount", source = "request.amount")
-    @Mapping(target = "expenseDate", source = "request", qualifiedByName = "currentEpochTime")
+    @Mapping(target = "expenseDate", source = "request.expenseDate")
     @Mapping(target = "splitMode", source = "request.splitMode")
     @Mapping(target = "currency", source = "request.currency")
     @Mapping(target = "category", source = "request.category")
@@ -39,12 +47,8 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
     @Mapping(target = "description", source = "request.description")
     @Mapping(target = "userShares", source = "request.userExpenseDetails", qualifiedByName = "mapUserExpenseDto")
+    @Mapping(target = "metaData", source = "request.metaData")
     ExpenseRevisionEntity toRevisionEntity(CreateExpenseRequest request, UUID expenseId);
-
-    @Mapping(target = "expenseId", source = "expenseId")
-    @Mapping(target = "groupId", source = "request.groupId")
-    @Mapping(target = "currentRevision", source = "revision")
-    ExpenseEntity toExpenseEntity(UUID expenseId, CreateExpenseRequest request, ExpenseRevisionEntity revision);
 
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
     @Mapping(target = "expenseId", source = "request.expenseId", qualifiedByName = "uuidToString")

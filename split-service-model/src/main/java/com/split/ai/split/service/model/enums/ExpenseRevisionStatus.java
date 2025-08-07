@@ -1,6 +1,7 @@
 package com.split.ai.split.service.model.enums;
 
-public enum UserStatus {
+public enum ExpenseRevisionStatus {
     ACTIVE,
-    IN_ACTIVE
+    IN_ACTIVE,
+    ;
 }

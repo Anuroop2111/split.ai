@@ -1,5 +1,6 @@
 package com.split.ai.split.service.core.mapper;
 
+import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
 import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.DeleteExpenseRequest;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "group", source = "request.groupId", qualifiedByName = "getGroup")
     @Mapping(target = "groupId", source = "request.groupId")
     @Mapping(target = "currentRevision", source = "revision")
+    @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
     ExpenseEntity toExpenseEntity(UUID expenseId, CreateExpenseRequest request, ExpenseRevisionEntity revision);
 
     @Mapping(target = "expenseRevisionId", source = "request", qualifiedByName = "randomUUID")
@@ -44,7 +47,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "currency", source = "request.currency")
     @Mapping(target = "category", source = "request.category")
     @Mapping(target = "subCategory", source = "request.subCategory")
-    @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
+    @Mapping(target = "revisionStatus", source = "request", qualifiedByName = "activeRevisionStatus")
     @Mapping(target = "description", source = "request.description")
     @Mapping(target = "userShares", source = "request.userExpenseDetails", qualifiedByName = "mapUserExpenseDto")
     @Mapping(target = "metaData", source = "request.metaData")
@@ -103,6 +106,11 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Named("pendingExpenseStatus")
     default ExpenseStatus pendingExpenseStatus(Object src) {
         return ExpenseStatus.PENDING;
+    }
+
+    @Named("activeRevisionStatus")
+    default ExpenseRevisionStatus activeRevisionStatus(Object src) {
+        return ExpenseRevisionStatus.ACTIVE;
     }
 
     @Named("cancelledExpenseStatus")

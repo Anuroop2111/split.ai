@@ -1,7 +1,10 @@
 package com.split.ai.split.service.repository.entity;
 
+import com.split.ai.split.service.model.enums.ExpenseStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
@@ -40,6 +43,13 @@ public class ExpenseEntity {
     @JoinColumn(name = "currentRevisionId", nullable = false, foreignKey =
     @ForeignKey(name = "fk_expense_current_rev"))
     private ExpenseRevisionEntity currentRevision;
+
+    @Column(name = "currentRevisionId", insertable = false, updatable = false)
+    private UUID currentRevisionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ExpenseStatus expenseStatus;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

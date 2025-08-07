@@ -2,6 +2,7 @@ package com.split.ai.split.service.repository.entity;
 
 import com.split.ai.split.service.model.enums.Category;
 import com.split.ai.split.service.model.enums.CurrencyType;
+import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
 import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.enums.SplitMode;
 import com.split.ai.split.service.model.enums.SubCategory;
@@ -89,7 +90,7 @@ public class ExpenseRevisionEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ExpenseStatus expenseStatus;
+    private ExpenseRevisionStatus revisionStatus;
 
     private String description;
 

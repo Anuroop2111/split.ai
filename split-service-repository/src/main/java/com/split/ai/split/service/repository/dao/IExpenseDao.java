@@ -14,8 +14,6 @@ public interface IExpenseDao {
 
     ExpenseEntity findById(UUID expenseId);
 
-    void saveRevision(ExpenseRevisionEntity entity);
-
     List<ExpenseRevisionEntity> findRevisions(UUID expenseId);
 
     List<ExpenseEntity> findByGroupId(UUID groupId);

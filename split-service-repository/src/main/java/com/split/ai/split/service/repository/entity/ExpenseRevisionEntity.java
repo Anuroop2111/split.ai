@@ -3,7 +3,6 @@ package com.split.ai.split.service.repository.entity;
 import com.split.ai.split.service.model.enums.Category;
 import com.split.ai.split.service.model.enums.CurrencyType;
 import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
-import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.enums.SplitMode;
 import com.split.ai.split.service.model.enums.SubCategory;
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -54,9 +53,9 @@ public class ExpenseRevisionEntity {
     @Column(name = "editedUserId", insertable = false, updatable = false)
     private UUID editedUserId;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Long editedAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ExpenseRevisionStatus revisionStatus;
 
     /* ---------- snapshot of mutable fields ---------- */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -88,14 +87,14 @@ public class ExpenseRevisionEntity {
     @Column(nullable = false)
     private SubCategory subCategory;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ExpenseRevisionStatus revisionStatus;
-
     private String description;
 
     @Column(columnDefinition = "text")
     private String metaData;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Long createdAt;
 
     /* ---------- snapshot of user-expense-shares (JSONB) ---------- */
     /**
@@ -106,9 +105,9 @@ public class ExpenseRevisionEntity {
     @Column(columnDefinition = "jsonb", nullable = false)
     private Map<UUID, BigDecimal> userShares;
 
-    public void beforeInsertOrUpdate() {
-        if (editedAt == null) {
-            editedAt = System.currentTimeMillis();
+    public void beforeInsert    () {
+        if (createdAt == null) {
+            createdAt = System.currentTimeMillis();
         }
     }
 }

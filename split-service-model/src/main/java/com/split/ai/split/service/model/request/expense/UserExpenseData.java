@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class UserExpenseData implements Serializable {
     @Serial
     private static final long serialVersionUID = 2331989438500758138L;
 
-    private String expenseId;
-    private String userId;
+    private UUID expenseId;
+    private UUID userId;
     private BigDecimal sharedAmount;
 }

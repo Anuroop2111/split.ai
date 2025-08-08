@@ -2,6 +2,8 @@ package com.split.ai.split.service.core.service.impl;
 
 import com.split.ai.split.service.core.mapper.ExpenseServiceMapper;
 import com.split.ai.split.service.core.service.IExpenseService;
+import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
+import com.split.ai.split.service.model.enums.ExpenseStatus;
 import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.DeleteExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
@@ -10,11 +12,13 @@ import com.split.ai.split.service.model.response.expense.ExpenseEditDto;
 import com.split.ai.split.service.model.response.expense.ExpenseHistoryResponse;
 import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.repository.dao.IExpenseDao;
+import com.split.ai.split.service.repository.dao.IExpenseRevisionDao;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
-import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
+import com.split.ai.split.service.repository.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,6 +38,7 @@ import java.util.UUID;
 public class ExpenseService implements IExpenseService {
 
     private final IExpenseDao expenseDao;
+    private final IExpenseRevisionDao expenseRevisionDao;
 
     @Override
     public ExpenseResponse getExpense(UUID expenseId) {
@@ -45,9 +50,11 @@ public class ExpenseService implements IExpenseService {
     @Override
     public void createExpense(CreateExpenseRequest request) {
         log.info("[ExpenseService : createExpense] : {}", request);
+        // todo: SplitEngine logic to verify the userExpenseDetails
+
         UUID expenseId = UUID.randomUUID();
         ExpenseRevisionEntity revision = ExpenseServiceMapper.MAPPER.toRevisionEntity(request, expenseId);
-        expenseDao.saveRevision(revision);
+        expenseRevisionDao.saveRevision(revision);
         ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(expenseId, request, revision);
         expenseDao.save(entity);
     }
@@ -58,84 +65,92 @@ public class ExpenseService implements IExpenseService {
 
         ExpenseEntity existing = expenseDao.findById(request.getExpenseId());
         if (existing == null) {
-            return;
+            throw new IllegalArgumentException("[ExpenseService : updateExpense] Expense not found for expenseId: {}");
         }
 
-        ExpenseRevisionEntity current = existing.getCurrentRevision();
+        ExpenseRevisionEntity currentRevision = existing.getCurrentRevision();
+        Pair<Boolean, ExpenseRevisionEntity> updatedFlagAndUpdatedExpenseRevision = getUpdatedExpenseRevision(request, currentRevision);
+        Boolean updated = updatedFlagAndUpdatedExpenseRevision.getLeft();
+        ExpenseRevisionEntity newRevision = updatedFlagAndUpdatedExpenseRevision.getRight();
+
+        if (!updated) {
+            throw new IllegalArgumentException("[ExpenseService : updateExpense] Invalid Expense Update Request");
+        }
+
+        currentRevision.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
+        expenseRevisionDao.updateRevision(currentRevision);
+        expenseRevisionDao.saveRevision(newRevision);
+        existing.setCurrentRevision(newRevision);
+        existing.setCurrentRevisionId(newRevision.getExpenseRevisionId());
+        expenseDao.update(existing);
+    }
+
+    private Pair<Boolean, ExpenseRevisionEntity> getUpdatedExpenseRevision(UpdateExpenseRequest request, ExpenseRevisionEntity currentRevision) {
         ExpenseRevisionEntity.ExpenseRevisionEntityBuilder builder = ExpenseRevisionEntity.builder()
                 .expenseRevisionId(UUID.randomUUID())
-                .expenseId(current.getExpenseId())
+                .expenseId(currentRevision.getExpenseId())
+                .editedByUser(UserEntity.builder().userId(request.getEditedBy()).build())
                 .editedUserId(request.getEditedBy())
+                .payer(UserEntity.builder().userId(currentRevision.getPayerId()).build())
+                .payerId(currentRevision.getPayerId())
+                .amount(currentRevision.getAmount())
+                .expenseDate(currentRevision.getExpenseDate())
+                .splitMode(currentRevision.getSplitMode())
+                .currency(currentRevision.getCurrency())
+                .category(currentRevision.getCategory())
+                .subCategory(currentRevision.getSubCategory())
                 .revisionStatus(ExpenseRevisionStatus.ACTIVE)
-                .payerId(current.getPayerId())
-                .amount(current.getAmount())
-                .expenseDate(current.getExpenseDate())
-                .splitMode(current.getSplitMode())
-                .currency(current.getCurrency())
-                .category(current.getCategory())
-                .subCategory(current.getSubCategory())
-                .description(current.getDescription())
-                .metaData(current.getMetaData())
-                .userShares(current.getUserShares());
+                .description(currentRevision.getDescription())
+                .metaData(currentRevision.getMetaData())
+                .userShares(currentRevision.getUserShares());
 
         boolean updated = false;
 
-        if (request.getPayerId() != null && !Objects.equals(request.getPayerId(), current.getPayerId())) {
+        if (request.getPayerId() != null && !Objects.equals(request.getPayerId(), currentRevision.getPayerId())) {
             builder.payerId(request.getPayerId());
             updated = true;
         }
-        if (request.getAmount() != null && current.getAmount().compareTo(request.getAmount()) != 0) {
+        if (request.getAmount() != null && currentRevision.getAmount().compareTo(request.getAmount()) != 0) {
             builder.amount(request.getAmount());
             updated = true;
         }
-        if (request.getExpenseDate() != null && !Objects.equals(request.getExpenseDate(), current.getExpenseDate())) {
+        if (request.getExpenseDate() != null && !Objects.equals(request.getExpenseDate(), currentRevision.getExpenseDate())) {
             builder.expenseDate(request.getExpenseDate());
             updated = true;
         }
-        if (request.getSplitMode() != null && request.getSplitMode() != current.getSplitMode()) {
+        if (request.getSplitMode() != null && request.getSplitMode() != currentRevision.getSplitMode()) {
             builder.splitMode(request.getSplitMode());
             updated = true;
         }
-        if (request.getCurrency() != null && request.getCurrency() != current.getCurrency()) {
+        if (request.getCurrency() != null && request.getCurrency() != currentRevision.getCurrency()) {
             builder.currency(request.getCurrency());
             updated = true;
         }
-        if (request.getCategory() != null && request.getCategory() != current.getCategory()) {
+        if (request.getCategory() != null && request.getCategory() != currentRevision.getCategory()) {
             builder.category(request.getCategory());
             updated = true;
         }
-        if (request.getSubCategory() != null && request.getSubCategory() != current.getSubCategory()) {
+        if (request.getSubCategory() != null && request.getSubCategory() != currentRevision.getSubCategory()) {
             builder.subCategory(request.getSubCategory());
             updated = true;
         }
-        if (request.getDescription() != null && !Objects.equals(request.getDescription(), current.getDescription())) {
+        if (request.getDescription() != null && !Objects.equals(request.getDescription(), currentRevision.getDescription())) {
             builder.description(request.getDescription());
             updated = true;
         }
-        if (request.getMetaData() != null && !Objects.equals(request.getMetaData(), current.getMetaData())) {
+        if (request.getMetaData() != null && !Objects.equals(request.getMetaData(), currentRevision.getMetaData())) {
             builder.metaData(request.getMetaData());
             updated = true;
         }
         if (request.getUserExpenseDetails() != null) {
             Map<UUID, BigDecimal> shares = ExpenseServiceMapper.MAPPER.mapUserExpenseData(request.getUserExpenseDetails());
-            if (!Objects.equals(shares, current.getUserShares())) {
+            if (!Objects.equals(shares, currentRevision.getUserShares())) {
                 builder.userShares(shares);
                 updated = true;
             }
         }
-
-        if (!updated) {
-            throw new IllegalArgumentException("Invalid Expense Update Request");
-        }
-
         ExpenseRevisionEntity newRevision = builder.build();
-
-        current.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
-        expenseDao.saveRevision(current);
-
-        expenseDao.saveRevision(newRevision);
-        ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(request.getExpenseId(), newRevision);
-        expenseDao.update(entity);
+        return Pair.of(updated, newRevision);
     }
 
     @Override
@@ -145,10 +160,12 @@ public class ExpenseService implements IExpenseService {
         if (existing == null) {
             return;
         }
-        ExpenseRevisionEntity revision = ExpenseServiceMapper.MAPPER.toDeleteRevision(existing.getCurrentRevision(), request);
-        expenseDao.saveRevision(revision);
-        ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(request.getExpenseId(), revision);
-        expenseDao.update(entity);
+        ExpenseRevisionEntity currentRevision = existing.getCurrentRevision();
+        currentRevision.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
+        expenseRevisionDao.updateRevision(currentRevision);
+        existing.setExpenseStatus(ExpenseStatus.CANCELLED);
+        existing.setCurrentRevision(currentRevision);
+        expenseDao.update(existing);
     }
 
     @Override
@@ -175,7 +192,7 @@ public class ExpenseService implements IExpenseService {
 
             ExpenseEditDto dto = ExpenseEditDto.builder()
                     .editedBy(current.getEditedUserId())
-                    .editedAt(current.getEditedAt())
+                    .editedAt(current.getCreatedAt())
                     .changes(changes.isEmpty() ? null : changes)
                     .userSharesOld(previous == null ? null : previous.getUserShares())
                     .userSharesNew(current.getUserShares())

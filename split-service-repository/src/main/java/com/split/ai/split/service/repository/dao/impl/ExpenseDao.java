@@ -27,7 +27,7 @@ public class ExpenseDao implements IExpenseDao {
     public void save(ExpenseEntity entity) {
         log.debug("[ExpenseDao : save] : {}", entity);
         try {
-            entity.beforeInsertOrUpdate();
+            entity.beforeInsert();
             postgresClient.insert(entity);
         } catch (Exception e) {
             log.error("[ExpenseDao : save] : error saving expense {}", entity.getExpenseId(), e);
@@ -59,23 +59,11 @@ public class ExpenseDao implements IExpenseDao {
     }
 
     @Override
-    public void saveRevision(ExpenseRevisionEntity entity) {
-        log.debug("[ExpenseDao : saveRevision] : {}", entity);
-        try {
-            entity.beforeInsertOrUpdate();
-            postgresClient.insert(entity);
-        } catch (Exception e) {
-            log.error("[ExpenseDao : saveRevision] : error saving revision for expense {}", entity.getExpenseId(), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<ExpenseRevisionEntity> findRevisions(UUID expenseId) {
         log.debug("[ExpenseDao : findRevisions] : {}", expenseId);
         try {
             String jpql = "SELECT er FROM ExpenseRevisionEntity er WHERE er.expenseId = :expenseId " +
-                    "ORDER BY er.editedAt DESC"; // ensure latest revisions come first
+                    "ORDER BY er.createdAt DESC"; // ensure latest revisions come first
             Map<String, Object> params = new HashMap<>();
             params.put("expenseId", expenseId.toString());
             return postgresClient.query(jpql, params, ExpenseRevisionEntity.class);

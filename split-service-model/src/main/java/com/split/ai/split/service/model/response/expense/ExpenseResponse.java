@@ -32,6 +32,7 @@ public class ExpenseResponse implements Serializable {
     private UUID groupId;
     private UUID payerId;
     private BigDecimal amount;
+    private Long expenseDate;
     private String description;
     private SplitMode splitMode;
     private CurrencyType currency;

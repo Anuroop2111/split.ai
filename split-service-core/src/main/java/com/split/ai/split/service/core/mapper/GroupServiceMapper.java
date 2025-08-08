@@ -58,7 +58,7 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Mapping(target = "currency", source = "currentRevision.currency")
     @Mapping(target = "category", source = "currentRevision.category")
     @Mapping(target = "subCategory", source = "currentRevision.subCategory")
-    @Mapping(target = "expenseStatus", source = "currentRevision.expenseStatus")
+    @Mapping(target = "expenseStatus", source = "expense.expenseStatus")
     @Mapping(target = "userExpenseDetails", source = "expense", qualifiedByName = "mapUserShares")
     ExpenseResponse mapToExpenseResponse(ExpenseEntity expense);
 

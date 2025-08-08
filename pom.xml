@@ -25,6 +25,7 @@
         <java.version>21</java.version>
         <lombok.version>1.18.38</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <commons-lang.version>3.17.0</commons-lang.version>
     </properties>
 
     <modules>
@@ -121,6 +122,12 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
         </dependency>
 
     </dependencies>

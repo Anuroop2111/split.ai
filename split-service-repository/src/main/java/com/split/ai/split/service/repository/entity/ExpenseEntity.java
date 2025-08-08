@@ -59,7 +59,7 @@ public class ExpenseEntity {
     @Column(nullable = false)
     private Long updatedAt;
 
-    public void beforeInsertOrUpdate() {
+    public void beforeInsert() {
         long now = System.currentTimeMillis();
         if (createdAt == null) {
             createdAt = now;

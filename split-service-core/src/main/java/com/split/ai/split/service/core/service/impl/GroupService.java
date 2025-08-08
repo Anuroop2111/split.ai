@@ -94,6 +94,8 @@ public class GroupService implements IGroupService {
     @Override
     public void deleteGroup(DeleteGroupRequest request) {
         log.info("[GroupService : deleteGroup] : {}", request);
+        // todo: Check if the userInitiated have ADMIN role, else throw exception
+
         GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.update(entity);
     }

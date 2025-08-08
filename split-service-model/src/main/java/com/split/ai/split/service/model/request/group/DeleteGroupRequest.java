@@ -29,5 +29,5 @@ public class DeleteGroupRequest implements Serializable {
     private UUID groupId;
 
     @NotNull
-    private UUID userId;
+    private UUID userInitiated;
 }

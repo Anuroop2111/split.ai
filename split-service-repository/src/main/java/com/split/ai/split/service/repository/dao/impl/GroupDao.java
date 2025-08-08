@@ -25,36 +25,56 @@ public class GroupDao implements IGroupDao {
     @Override
     public void save(GroupEntity entity) {
         log.debug("[GroupDao : save] : {}", entity);
-        entity.beforeInsertOrUpdate();
-        postgresClient.insert(entity);
+        try {
+            entity.beforeInsertOrUpdate();
+            postgresClient.insert(entity);
+        } catch (Exception e) {
+            log.error("[GroupDao : save] : error saving group {}", entity.getGroupId(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void update(GroupEntity entity) {
         log.debug("[GroupDao : update] : {}", entity);
-        entity.beforeUpdate();
-        postgresClient.partialUpdate(entity);
+        try {
+            entity.beforeUpdate();
+            postgresClient.partialUpdate(entity);
+        } catch (Exception e) {
+            log.error("[GroupDao : update] : error updating group {}", entity.getGroupId(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public GroupEntity findById(UUID groupId) {
         log.debug("[GroupDao : findById] : {}", groupId);
-        return postgresClient.findById(GroupEntity.class, groupId);
+        try {
+            return postgresClient.findById(GroupEntity.class, groupId);
+        } catch (Exception e) {
+            log.error("[GroupDao : findById] : error fetching group {}", groupId, e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<GroupEntity> findByUserIdPaginated(UUID userId, Integer page, Integer size) {
         log.debug("[GroupDao : findByUserIdPaginated] : user {} page {} size {}", userId, page, size);
-        String sql = "SELECT g.* FROM groups g " +
-                "JOIN user_group ug ON g.groupId = ug.groupId " +
-                "WHERE ug.userId = :userId " +
-                "ORDER BY g.createdAt DESC " +
-                "LIMIT :limit OFFSET :offset";
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("limit", size);
-        params.put("offset", (page - 1L) * size);
-        return postgresClient.queryNative(sql, params, GroupEntity.class);
+        try {
+            String sql = "SELECT g.* FROM groups g " +
+                    "JOIN user_group ug ON g.groupId = ug.groupId " +
+                    "WHERE ug.userId = :userId " +
+                    "ORDER BY g.createdAt DESC " +
+                    "LIMIT :limit OFFSET :offset";
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId", userId);
+            params.put("limit", size);
+            params.put("offset", (page - 1L) * size);
+            return postgresClient.queryNative(sql, params, GroupEntity.class);
+        } catch (Exception e) {
+            log.error("[GroupDao : findByUserIdPaginated] : error fetching groups for user {} page {} size {}", userId, page, size, e);
+            throw new RuntimeException(e);
+        }
     }
 }
 

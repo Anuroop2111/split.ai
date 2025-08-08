@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * DTO capturing one edit history entry of an expense.
@@ -25,9 +24,9 @@ public class ExpenseEditDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -7338268945012745668L;
 
-    private UUID editedBy;
+    private String editedBy;
     private Long editedAt;
 
-    private Map<String, ChangeDto> changes;
-    private Map<String, ChangeDto> userShareChanges;
+    private Map<String, ChangeDto> changes; // AttributeName : ChangeDto
+    private Map<String, ChangeDto> userShareChanges; // UserName : ChangeDto
 }

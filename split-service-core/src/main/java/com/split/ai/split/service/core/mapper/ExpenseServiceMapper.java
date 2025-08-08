@@ -29,6 +29,7 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     @Mapping(target = "group", source = "request.groupId", qualifiedByName = "getGroup")
     @Mapping(target = "groupId", source = "request.groupId")
     @Mapping(target = "currentRevision", source = "revision")
+    @Mapping(target = "currentRevisionId", source = "revision.expenseRevisionId")
     @Mapping(target = "expenseStatus", source = "request", qualifiedByName = "pendingExpenseStatus")
     ExpenseEntity toExpenseEntity(UUID expenseId, CreateExpenseRequest request, ExpenseRevisionEntity revision);
 

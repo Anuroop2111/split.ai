@@ -12,6 +12,5 @@ public class ValidationUtil {
         if (Objects.isNull(query) || query.length() < 2) {
             throw new RuntimeException("query length can't be less than 2");
         }
-
     }
 }

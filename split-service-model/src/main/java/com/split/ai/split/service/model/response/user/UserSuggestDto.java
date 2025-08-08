@@ -26,7 +26,7 @@ public class UserSuggestDto implements Serializable {
 
     private UUID userId;
     private String userName;
-    private String name;
+    private String fullName;
     private String emailId;
     private String phone;
 }

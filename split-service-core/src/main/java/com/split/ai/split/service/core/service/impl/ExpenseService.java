@@ -16,6 +16,7 @@ import com.split.ai.split.service.repository.dao.IExpenseRevisionDao;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
 import com.split.ai.split.service.repository.entity.UserEntity;
+import com.split.ai.split.service.repository.dao.IUserDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,6 +40,7 @@ public class ExpenseService implements IExpenseService {
 
     private final IExpenseDao expenseDao;
     private final IExpenseRevisionDao expenseRevisionDao;
+    private final IUserDao userDao;
 
     @Override
     public ExpenseResponse getExpense(UUID expenseId) {
@@ -179,6 +181,7 @@ public class ExpenseService implements IExpenseService {
             ExpenseRevisionEntity previous = i + 1 < revisions.size() ? revisions.get(i + 1) : null;
 
             Map<String, ChangeDto> changes = new HashMap<>();
+            Map<String, ChangeDto> userShareChanges = new HashMap<>();
 
             computeChange("payer", previous == null ? null : previous.getPayerId(), current.getPayerId(), changes);
             computeChange("amount", previous == null ? null : previous.getAmount(), current.getAmount(), changes);
@@ -190,12 +193,13 @@ public class ExpenseService implements IExpenseService {
             computeChange("description", previous == null ? null : previous.getDescription(), current.getDescription(), changes);
             computeChange("metaData", previous == null ? null : previous.getMetaData(), current.getMetaData(), changes);
 
+            computeUserShareChanges(previous == null ? null : previous.getUserShares(), current.getUserShares(), userShareChanges);
+
             ExpenseEditDto dto = ExpenseEditDto.builder()
                     .editedBy(current.getEditedUserId())
                     .editedAt(current.getCreatedAt())
                     .changes(changes.isEmpty() ? null : changes)
-                    .userSharesOld(previous == null ? null : previous.getUserShares())
-                    .userSharesNew(current.getUserShares())
+                    .userShareChanges(userShareChanges.isEmpty() ? null : userShareChanges)
                     .build();
             edits.add(dto);
         }
@@ -203,6 +207,38 @@ public class ExpenseService implements IExpenseService {
         return ExpenseHistoryResponse.builder()
                 .expenseEditList(edits)
                 .build();
+    }
+
+    private void computeUserShareChanges(Map<UUID, BigDecimal> oldShares, Map<UUID, BigDecimal> newShares,
+                                         Map<String, ChangeDto> userShareChanges) {
+        if (newShares != null) {
+            for (Map.Entry<UUID, BigDecimal> entry : newShares.entrySet()) {
+                UUID userId = entry.getKey();
+                BigDecimal newVal = entry.getValue();
+                BigDecimal oldVal = oldShares == null ? null : oldShares.get(userId);
+                if (oldVal == null || newVal.compareTo(oldVal) != 0) {
+                    String name = getUserFullName(userId);
+                    String oldStr = oldVal == null ? "0" : convertToString(oldVal);
+                    String newStr = newVal == null ? "0" : convertToString(newVal);
+                    userShareChanges.put(name, ChangeDto.builder().oldValue(oldStr).newValue(newStr).build());
+                }
+            }
+        }
+        if (oldShares != null) {
+            for (Map.Entry<UUID, BigDecimal> entry : oldShares.entrySet()) {
+                UUID userId = entry.getKey();
+                if (newShares == null || !newShares.containsKey(userId)) {
+                    String name = getUserFullName(userId);
+                    String oldStr = convertToString(entry.getValue());
+                    userShareChanges.put(name, ChangeDto.builder().oldValue(oldStr).newValue("0").build());
+                }
+            }
+        }
+    }
+
+    private String getUserFullName(UUID userId) {
+        UserEntity user = userDao.findById(userId);
+        return user != null ? user.getFullName() : userId.toString();
     }
 
     private void computeChange(String key, Object oldVal, Object newVal, Map<String, ChangeDto> changes) {

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,6 +29,5 @@ public class ExpenseEditDto implements Serializable {
     private Long editedAt;
 
     private Map<String, ChangeDto> changes;
-    private Map<UUID, BigDecimal> userSharesOld;
-    private Map<UUID, BigDecimal> userSharesNew;
+    private Map<String, ChangeDto> userShareChanges;
 }

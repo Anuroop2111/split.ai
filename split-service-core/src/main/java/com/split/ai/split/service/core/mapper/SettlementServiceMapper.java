@@ -13,8 +13,11 @@ public interface SettlementServiceMapper extends BaseServiceMapper {
     SettlementServiceMapper MAPPER = Mappers.getMapper(SettlementServiceMapper.class);
 
     @Mapping(target = "settlementId", source = "request", qualifiedByName = "randomUUID")
+    @Mapping(target = "group", source = "groupId", qualifiedByName = "getGroup")
     @Mapping(target = "groupId", source = "groupId")
+    @Mapping(target = "fromUserId", source = "payerId", qualifiedByName = "getUser")
     @Mapping(target = "fromUserId", source = "payerId")
+    @Mapping(target = "toUserId", source = "receiverId", qualifiedByName = "getUser")
     @Mapping(target = "toUserId", source = "receiverId")
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "currencyType", source = "currency")
@@ -23,8 +26,8 @@ public interface SettlementServiceMapper extends BaseServiceMapper {
 
     @Mapping(target = "settlementId", source = "settlementId")
     @Mapping(target = "groupId", source = "groupId")
-    @Mapping(target = "fromUser", source = "fromUserId")
-    @Mapping(target = "toUser", source = "toUserId")
+    @Mapping(target = "fromUserId", source = "fromUserId")
+    @Mapping(target = "toUserId", source = "toUserId")
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "currencyType", source = "currencyType")
     @Mapping(target = "note", source = "note")

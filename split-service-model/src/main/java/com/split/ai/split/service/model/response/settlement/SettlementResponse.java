@@ -28,8 +28,8 @@ public class SettlementResponse implements Serializable {
 
     private UUID settlementId;
     private UUID groupId;
-    private UUID fromUser;
-    private UUID toUser;
+    private UUID fromUserId;
+    private UUID toUserId;
     private BigDecimal amount;
     private CurrencyType currencyType;
     private String note;

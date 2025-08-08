@@ -10,6 +10,7 @@ import com.split.ai.split.service.model.request.group.LeaveGroupRequest;
 import com.split.ai.split.service.model.request.group.RemoveUserFromGroupRequest;
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
 import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
+import com.split.ai.split.service.model.enums.Role;
 import com.split.ai.split.service.model.request.user.UserRoleData;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
@@ -65,16 +66,14 @@ public class GroupService implements IGroupService {
     @Override
     public void addUserToGroup(UUID groupId, AddUserToGroupRequest request) {
         log.info("[GroupService : addUserToGroup] : {}", request);
-        // todo: Check if the userInitiated userId have ADMIN ROLE, if not throw exception
-
+        validateAdmin(groupId, request.getUserInitiated());
         userGroupDao.addUsers(groupId, request.getAdditionalUserData());
     }
 
     @Override
     public void removeUser(UUID groupId, RemoveUserFromGroupRequest request) {
         log.info("[GroupService : removeUser] : group {} user {}", groupId, request.getUserToRemove());
-        // todo: Check if the userInitiated have ADMIN role, else throw exception
-
+        validateAdmin(groupId, request.getUserInitiated());
         userGroupDao.removeUser(groupId, request.getUserToRemove());
     }
 
@@ -94,8 +93,7 @@ public class GroupService implements IGroupService {
     @Override
     public void deleteGroup(DeleteGroupRequest request) {
         log.info("[GroupService : deleteGroup] : {}", request);
-        // todo: Check if the userInitiated have ADMIN role, else throw exception
-
+        validateAdmin(request.getGroupId(), request.getUserInitiated());
         GroupEntity entity = GroupServiceMapper.MAPPER.convert(request);
         groupDao.update(entity);
     }
@@ -118,5 +116,12 @@ public class GroupService implements IGroupService {
         log.info("[GroupService : getMembers] : {}", groupId);
         List<UserRoleData> members = userGroupDao.findUsersByGroupId(groupId);
         return GroupServiceMapper.MAPPER.convert(groupId, members);
+    }
+
+    private void validateAdmin(UUID groupId, UUID userId) {
+        UserRoleData data = userGroupDao.findUserRole(groupId, userId);
+        if (data == null || data.getRole() != Role.ADMIN) {
+            throw new RuntimeException("User does not have ADMIN role");
+        }
     }
 }

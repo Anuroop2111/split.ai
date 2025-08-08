@@ -73,4 +73,20 @@ public class UserGroupDao implements IUserGroupDao {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public UserRoleData findUserRole(UUID groupId, UUID userId) {
+        log.debug("[UserGroupDao : findUserRole] : group {} user {}", groupId, userId);
+        try {
+            String sql = "SELECT user_id as \"userId\", role FROM user_group WHERE group_id = :groupId AND user_id = :userId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("groupId", groupId);
+            params.put("userId", userId);
+            List<UserRoleData> result = postgresClient.queryNative(sql, params, UserRoleData.class);
+            return result.isEmpty() ? null : result.get(0);
+        } catch (Exception e) {
+            log.error("[UserGroupDao : findUserRole] : error fetching role for user {} in group {}", userId, groupId, e);
+            throw new RuntimeException(e);
+        }
+    }
 }

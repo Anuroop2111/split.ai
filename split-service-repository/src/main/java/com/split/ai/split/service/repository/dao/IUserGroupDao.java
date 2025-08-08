@@ -12,4 +12,6 @@ public interface IUserGroupDao {
     void removeUser(UUID groupId, UUID userId);
 
     List<UserRoleData> findUsersByGroupId(UUID groupId);
+
+    UserRoleData findUserRole(UUID groupId, UUID userId);
 }

@@ -12,6 +12,7 @@ import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.repository.dao.IExpenseDao;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
+import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -55,9 +56,85 @@ public class ExpenseService implements IExpenseService {
     public void updateExpense(UpdateExpenseRequest request) {
         log.info("[ExpenseService : updateExpense] : {}", request);
 
-        ExpenseRevisionEntity revision = ExpenseServiceMapper.MAPPER.toRevisionEntity(request);
-        expenseDao.saveRevision(revision);
-        ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(request.getExpenseId(), revision);
+        ExpenseEntity existing = expenseDao.findById(request.getExpenseId());
+        if (existing == null) {
+            return;
+        }
+
+        ExpenseRevisionEntity current = existing.getCurrentRevision();
+        ExpenseRevisionEntity.ExpenseRevisionEntityBuilder builder = ExpenseRevisionEntity.builder()
+                .expenseRevisionId(UUID.randomUUID())
+                .expenseId(current.getExpenseId())
+                .editedUserId(request.getEditedBy())
+                .revisionStatus(ExpenseRevisionStatus.ACTIVE)
+                .payerId(current.getPayerId())
+                .amount(current.getAmount())
+                .expenseDate(current.getExpenseDate())
+                .splitMode(current.getSplitMode())
+                .currency(current.getCurrency())
+                .category(current.getCategory())
+                .subCategory(current.getSubCategory())
+                .description(current.getDescription())
+                .metaData(current.getMetaData())
+                .userShares(current.getUserShares());
+
+        boolean updated = false;
+
+        if (request.getPayerId() != null && !Objects.equals(request.getPayerId(), current.getPayerId())) {
+            builder.payerId(request.getPayerId());
+            updated = true;
+        }
+        if (request.getAmount() != null && current.getAmount().compareTo(request.getAmount()) != 0) {
+            builder.amount(request.getAmount());
+            updated = true;
+        }
+        if (request.getExpenseDate() != null && !Objects.equals(request.getExpenseDate(), current.getExpenseDate())) {
+            builder.expenseDate(request.getExpenseDate());
+            updated = true;
+        }
+        if (request.getSplitMode() != null && request.getSplitMode() != current.getSplitMode()) {
+            builder.splitMode(request.getSplitMode());
+            updated = true;
+        }
+        if (request.getCurrency() != null && request.getCurrency() != current.getCurrency()) {
+            builder.currency(request.getCurrency());
+            updated = true;
+        }
+        if (request.getCategory() != null && request.getCategory() != current.getCategory()) {
+            builder.category(request.getCategory());
+            updated = true;
+        }
+        if (request.getSubCategory() != null && request.getSubCategory() != current.getSubCategory()) {
+            builder.subCategory(request.getSubCategory());
+            updated = true;
+        }
+        if (request.getDescription() != null && !Objects.equals(request.getDescription(), current.getDescription())) {
+            builder.description(request.getDescription());
+            updated = true;
+        }
+        if (request.getMetaData() != null && !Objects.equals(request.getMetaData(), current.getMetaData())) {
+            builder.metaData(request.getMetaData());
+            updated = true;
+        }
+        if (request.getUserExpenseDetails() != null) {
+            Map<UUID, BigDecimal> shares = ExpenseServiceMapper.MAPPER.mapUserExpenseData(request.getUserExpenseDetails());
+            if (!Objects.equals(shares, current.getUserShares())) {
+                builder.userShares(shares);
+                updated = true;
+            }
+        }
+
+        if (!updated) {
+            throw new IllegalArgumentException("Invalid Expense Update Request");
+        }
+
+        ExpenseRevisionEntity newRevision = builder.build();
+
+        current.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
+        expenseDao.saveRevision(current);
+
+        expenseDao.saveRevision(newRevision);
+        ExpenseEntity entity = ExpenseServiceMapper.MAPPER.toExpenseEntity(request.getExpenseId(), newRevision);
         expenseDao.update(entity);
     }
 

@@ -34,7 +34,7 @@ public class CreateGroupRequest implements Serializable {
     private String groupName;
 
     @NotNull
-    private UUID userInitiated;
+    private UUID userInitiated; // Will be ADMIN by default
 
     private List<UserRoleData> additionalUserData;
 

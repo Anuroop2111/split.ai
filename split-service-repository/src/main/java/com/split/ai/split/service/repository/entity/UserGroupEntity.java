@@ -29,7 +29,7 @@ public class UserGroupEntity {
 
     private Long createdAt;
 
-    public void beforeInsertOrUpdate() {
+    public void beforeInsert() {
         if (createdAt == null) {
             createdAt = System.currentTimeMillis();
         }

@@ -3,6 +3,7 @@ package com.split.ai.split.service.model.request.group;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.split.ai.split.service.model.request.user.UserRoleData;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +28,8 @@ public class AddUserToGroupRequest implements Serializable {
     @Serial
     private static final long serialVersionUID = 5090882816639713474L;
 
-    @NotNull
-    private UUID groupId;
+    @NotBlank
+    private UUID userInitiated;
 
     private List<UserRoleData> additionalUserData;
 }

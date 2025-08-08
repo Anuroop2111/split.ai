@@ -53,12 +53,14 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Mapping(target = "groupId", source = "expense.groupId")
     @Mapping(target = "payerId", source = "currentRevision.payerId")
     @Mapping(target = "amount", source = "currentRevision.amount")
+    @Mapping(target = "expenseDate", source = "currentRevision.expenseDate")
     @Mapping(target = "description", source = "currentRevision.description")
     @Mapping(target = "splitMode", source = "currentRevision.splitMode")
     @Mapping(target = "currency", source = "currentRevision.currency")
     @Mapping(target = "category", source = "currentRevision.category")
     @Mapping(target = "subCategory", source = "currentRevision.subCategory")
     @Mapping(target = "expenseStatus", source = "expense.expenseStatus")
+    @Mapping(target = "createdAt", source = "expense.createdAt")
     @Mapping(target = "userExpenseDetails", source = "expense", qualifiedByName = "mapUserShares")
     ExpenseResponse mapToExpenseResponse(ExpenseEntity expense);
 
@@ -66,7 +68,7 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     @Mapping(target = "expenses", source = "expenses")
     GroupExpenseResponse convert(GroupEntity group, List<ExpenseEntity> expenses);
 
-    UserGroupResponse convert(GroupEntity entity);
+//    UserGroupResponse convert(GroupEntity entity);
 
     @Mapping(target = "groupId", source = "groupId")
     @Mapping(target = "groupUserData", source = "groupUserData")

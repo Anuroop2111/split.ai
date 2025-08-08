@@ -36,7 +36,7 @@ public class UserGroupDao implements IUserGroupDao {
                         .id(new UserGroupKey(groupId, user.getUserId()))
                         .role(user.getRole())
                         .build();
-                entity.beforeInsertOrUpdate();
+                entity.beforeInsert();
                 postgresClient.insert(entity);
             } catch (Exception e) {
                 log.error("[UserGroupDao : addUsers] : error adding user {} to group {}", user.getUserId(), groupId, e);

@@ -51,18 +51,18 @@ public class GroupController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/add-user")
-    public ResponseEntity<Void> addUser(@Valid @RequestBody AddUserToGroupRequest request) {
+    @PutMapping("{groupId}/add-user")
+    public ResponseEntity<Void> addUser(@PathVariable @NotBlank UUID groupId, @Valid @RequestBody AddUserToGroupRequest request) {
         log.info("[GroupController : addUser] : {}", request);
-        groupService.addUserToGroup(request);
+        groupService.addUserToGroup(groupId, request);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{groupId}/remove-user")
-    public ResponseEntity<Void> removeUser(@PathVariable @NotBlank String groupId,
+    public ResponseEntity<Void> removeUser(@PathVariable @NotBlank UUID groupId,
                                            @Valid @RequestBody RemoveUserFromGroupRequest request) {
         log.info("[GroupController : removeUser] : {}", request);
-        groupService.removeUser(UUID.fromString(groupId), request);
+        groupService.removeUser(groupId, request);
         return ResponseEntity.ok().build();
     }
 

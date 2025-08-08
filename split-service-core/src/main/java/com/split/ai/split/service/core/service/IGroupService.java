@@ -19,7 +19,7 @@ public interface IGroupService {
 
     void createGroup(CreateGroupRequest request);
 
-    void addUserToGroup(AddUserToGroupRequest request);
+    void addUserToGroup(UUID groupId, AddUserToGroupRequest request);
 
     void removeUser(UUID groupId, RemoveUserFromGroupRequest request);
 

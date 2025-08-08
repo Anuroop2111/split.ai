@@ -2,6 +2,7 @@ package com.split.ai.split.service.model.response.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.split.ai.split.service.model.enums.GroupStatus;
 import com.split.ai.split.service.model.enums.GroupType;
 import com.split.ai.split.service.model.enums.SettleMode;
 import lombok.AllArgsConstructor;
@@ -30,4 +31,6 @@ public class UserGroupResponse implements Serializable {
     private String groupName;
     private GroupType groupType;
     private SettleMode settleMode;
+    private GroupStatus groupStatus;
+    private Long createdAt;
 }

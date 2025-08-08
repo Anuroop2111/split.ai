@@ -63,14 +63,18 @@ public class GroupService implements IGroupService {
     }
 
     @Override
-    public void addUserToGroup(AddUserToGroupRequest request) {
+    public void addUserToGroup(UUID groupId, AddUserToGroupRequest request) {
         log.info("[GroupService : addUserToGroup] : {}", request);
-        userGroupDao.addUsers(request.getGroupId(), request.getAdditionalUserData());
+        // todo: Check if the userInitiated userId have ADMIN ROLE, if not throw exception
+
+        userGroupDao.addUsers(groupId, request.getAdditionalUserData());
     }
 
     @Override
     public void removeUser(UUID groupId, RemoveUserFromGroupRequest request) {
         log.info("[GroupService : removeUser] : group {} user {}", groupId, request.getUserToRemove());
+        // todo: Check if the userInitiated have ADMIN role, else throw exception
+
         userGroupDao.removeUser(groupId, request.getUserToRemove());
     }
 
@@ -104,7 +108,7 @@ public class GroupService implements IGroupService {
     @Override
     public void inviteMember(UUID groupId, InviteMembersToGroupRequest request) {
         log.info("[GroupService : inviteMember] : group {} invite {}", groupId, request);
-        // Invitation logic to be implemented later
+        // todo: Invitation logic to be implemented later
     }
 
     @Override

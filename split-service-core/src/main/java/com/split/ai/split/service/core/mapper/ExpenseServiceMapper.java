@@ -1,7 +1,7 @@
 package com.split.ai.split.service.core.mapper;
 
-import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
-import com.split.ai.split.service.model.enums.ExpenseStatus;
+import com.split.ai.split.service.model.enums.EXPENSE_REVISION_STATUS;
+import com.split.ai.split.service.model.enums.EXPENSE_STATUS;
 import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UserExpenseData;
 import com.split.ai.split.service.model.response.expense.ExpenseResponse;
@@ -67,23 +67,23 @@ public interface ExpenseServiceMapper extends BaseServiceMapper {
     ExpenseResponse toExpenseResponse(ExpenseEntity expense);
 
     @Named("pendingExpenseStatus")
-    default ExpenseStatus pendingExpenseStatus(Object src) {
-        return ExpenseStatus.PENDING;
+    default EXPENSE_STATUS pendingExpenseStatus(Object src) {
+        return EXPENSE_STATUS.PENDING;
     }
 
     @Named("activeRevisionStatus")
-    default ExpenseRevisionStatus activeRevisionStatus(Object src) {
-        return ExpenseRevisionStatus.ACTIVE;
+    default EXPENSE_REVISION_STATUS activeRevisionStatus(Object src) {
+        return EXPENSE_REVISION_STATUS.ACTIVE;
     }
 
     @Named("cancelledExpenseStatus")
-    default ExpenseStatus cancelledExpenseStatus(Object src) {
-        return ExpenseStatus.CANCELLED;
+    default EXPENSE_STATUS cancelledExpenseStatus(Object src) {
+        return EXPENSE_STATUS.CANCELLED;
     }
 
     @Named("inActiveExpenseRevisionStatus")
-    default ExpenseRevisionStatus inActiveExpenseRevisionStatus(Object src) {
-        return ExpenseRevisionStatus.IN_ACTIVE;
+    default EXPENSE_REVISION_STATUS inActiveExpenseRevisionStatus(Object src) {
+        return EXPENSE_REVISION_STATUS.IN_ACTIVE;
     }
 
     @Named("mapUserExpenseDto")

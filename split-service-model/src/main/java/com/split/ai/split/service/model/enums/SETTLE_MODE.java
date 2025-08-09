@@ -1,6 +1,6 @@
 package com.split.ai.split.service.model.enums;
 
-public enum SettleMode {
+public enum SETTLE_MODE {
     SMART_SETTLE,
     NORMAL_SETTLE,
     ;

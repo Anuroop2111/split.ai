@@ -10,7 +10,7 @@ import com.split.ai.split.service.model.request.group.LeaveGroupRequest;
 import com.split.ai.split.service.model.request.group.RemoveUserFromGroupRequest;
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
 import com.split.ai.split.service.model.request.group.UpdateGroupRequest;
-import com.split.ai.split.service.model.enums.Role;
+import com.split.ai.split.service.model.enums.ROLE;
 import com.split.ai.split.service.model.request.user.UserRoleData;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
@@ -120,7 +120,7 @@ public class GroupService implements IGroupService {
 
     private void validateAdmin(UUID groupId, UUID userId) {
         UserRoleData data = userGroupDao.findUserRole(groupId, userId);
-        if (data == null || data.getRole() != Role.ADMIN) {
+        if (data == null || data.getRole() != ROLE.ADMIN) {
             throw new RuntimeException("User does not have ADMIN role");
         }
     }

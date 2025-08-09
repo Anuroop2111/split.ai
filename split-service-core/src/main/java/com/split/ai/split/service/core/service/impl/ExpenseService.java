@@ -3,8 +3,8 @@ package com.split.ai.split.service.core.service.impl;
 import com.split.ai.split.service.core.helper.ExpenseHelper;
 import com.split.ai.split.service.core.mapper.ExpenseServiceMapper;
 import com.split.ai.split.service.core.service.IExpenseService;
-import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
-import com.split.ai.split.service.model.enums.ExpenseStatus;
+import com.split.ai.split.service.model.enums.EXPENSE_REVISION_STATUS;
+import com.split.ai.split.service.model.enums.EXPENSE_STATUS;
 import com.split.ai.split.service.model.request.expense.CreateExpenseRequest;
 import com.split.ai.split.service.model.request.expense.DeleteExpenseRequest;
 import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
@@ -80,7 +80,7 @@ public class ExpenseService implements IExpenseService {
             throw new IllegalArgumentException("[ExpenseService : updateExpense] Invalid Expense Update Request");
         }
 
-        currentRevision.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
+        currentRevision.setRevisionStatus(EXPENSE_REVISION_STATUS.IN_ACTIVE);
         expenseRevisionDao.updateRevision(currentRevision);
         expenseRevisionDao.saveRevision(newRevision);
         existing.setCurrentRevision(newRevision);
@@ -96,9 +96,9 @@ public class ExpenseService implements IExpenseService {
             return;
         }
         ExpenseRevisionEntity currentRevision = existing.getCurrentRevision();
-        currentRevision.setRevisionStatus(ExpenseRevisionStatus.IN_ACTIVE);
+        currentRevision.setRevisionStatus(EXPENSE_REVISION_STATUS.IN_ACTIVE);
         expenseRevisionDao.updateRevision(currentRevision);
-        existing.setExpenseStatus(ExpenseStatus.CANCELLED);
+        existing.setExpenseStatus(EXPENSE_STATUS.CANCELLED);
         existing.setCurrentRevision(currentRevision);
         expenseDao.update(existing);
     }

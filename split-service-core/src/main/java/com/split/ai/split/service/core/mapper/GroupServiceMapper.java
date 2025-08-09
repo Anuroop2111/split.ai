@@ -1,9 +1,9 @@
 package com.split.ai.split.service.core.mapper;
 
-import com.split.ai.split.service.model.enums.GroupStatus;
-import com.split.ai.split.service.model.enums.GroupType;
-import com.split.ai.split.service.model.enums.Role;
-import com.split.ai.split.service.model.enums.SettleMode;
+import com.split.ai.split.service.model.enums.GROUP_TYPE;
+import com.split.ai.split.service.model.enums.GROUP_STATUS;
+import com.split.ai.split.service.model.enums.ROLE;
+import com.split.ai.split.service.model.enums.SETTLE_MODE;
 import com.split.ai.split.service.model.request.group.CreateGroupRequest;
 import com.split.ai.split.service.model.request.group.DeleteGroupRequest;
 import com.split.ai.split.service.model.request.group.ToggleGroupSettleMode;
@@ -13,7 +13,6 @@ import com.split.ai.split.service.model.response.expense.ExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupExpenseResponse;
 import com.split.ai.split.service.model.response.group.GroupUserResponse;
 import com.split.ai.split.service.model.response.user.UserExpenseDto;
-import com.split.ai.split.service.model.response.user.UserGroupResponse;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.GroupEntity;
 import org.mapstruct.Mapper;
@@ -79,28 +78,28 @@ public interface GroupServiceMapper extends BaseServiceMapper {
     UserRoleData createAdmin(UUID userId);
 
     @Named("defaultGroupType")
-    default GroupType defaultGroupType(GroupType groupType) {
-        return groupType == null ? GroupType.COMMON : groupType;
+    default GROUP_TYPE defaultGroupType(GROUP_TYPE GROUPTYPE) {
+        return GROUPTYPE == null ? GROUP_TYPE.COMMON : GROUPTYPE;
     }
 
     @Named("normalSettleMode")
-    default SettleMode normalSettleMode(Object src) {
-        return SettleMode.NORMAL_SETTLE;
+    default SETTLE_MODE normalSettleMode(Object src) {
+        return SETTLE_MODE.NORMAL_SETTLE;
     }
 
     @Named("activeGroupStatus")
-    default GroupStatus activeGroupStatus(Object src) {
-        return GroupStatus.ACTIVE;
+    default GROUP_STATUS activeGroupStatus(Object src) {
+        return GROUP_STATUS.ACTIVE;
     }
 
     @Named("deletedGroupStatus")
-    default GroupStatus deletedGroupStatus(Object src) {
-        return GroupStatus.DELETED;
+    default GROUP_STATUS deletedGroupStatus(Object src) {
+        return GROUP_STATUS.DELETED;
     }
 
     @Named("adminRole")
-    default Role adminRole(Object src) {
-        return Role.ADMIN;
+    default ROLE adminRole(Object src) {
+        return ROLE.ADMIN;
     }
 
     @Named("mapUserShares")

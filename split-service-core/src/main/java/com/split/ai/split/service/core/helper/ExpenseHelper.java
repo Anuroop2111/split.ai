@@ -1,7 +1,7 @@
 package com.split.ai.split.service.core.helper;
 
 import com.split.ai.split.service.core.mapper.ExpenseServiceMapper;
-import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
+import com.split.ai.split.service.model.enums.EXPENSE_REVISION_STATUS;
 import com.split.ai.split.service.model.request.expense.UpdateExpenseRequest;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
 import com.split.ai.split.service.repository.entity.UserEntity;
@@ -31,7 +31,7 @@ public class ExpenseHelper {
                 .currency(currentRevision.getCurrency())
                 .category(currentRevision.getCategory())
                 .subCategory(currentRevision.getSubCategory())
-                .revisionStatus(ExpenseRevisionStatus.ACTIVE)
+                .revisionStatus(EXPENSE_REVISION_STATUS.ACTIVE)
                 .description(currentRevision.getDescription())
                 .metaData(currentRevision.getMetaData())
                 .userShares(currentRevision.getUserShares());

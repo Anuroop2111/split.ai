@@ -1,10 +1,10 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.model.enums.Category;
-import com.split.ai.split.service.model.enums.CurrencyType;
-import com.split.ai.split.service.model.enums.ExpenseRevisionStatus;
-import com.split.ai.split.service.model.enums.SplitMode;
-import com.split.ai.split.service.model.enums.SubCategory;
+import com.split.ai.split.service.model.enums.CURRENCY;
+import com.split.ai.split.service.model.enums.CATEGORY;
+import com.split.ai.split.service.model.enums.EXPENSE_REVISION_STATUS;
+import com.split.ai.split.service.model.enums.SPLIT_MODE;
+import com.split.ai.split.service.model.enums.SUB_CATEGORY;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +55,7 @@ public class ExpenseRevisionEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ExpenseRevisionStatus revisionStatus;
+    private EXPENSE_REVISION_STATUS revisionStatus;
 
     /* ---------- snapshot of mutable fields ---------- */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -73,19 +73,19 @@ public class ExpenseRevisionEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SplitMode splitMode;
+    private SPLIT_MODE splitMode;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 3)
-    private CurrencyType currency;
+    private CURRENCY currency;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Category category;
+    private CATEGORY category;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SubCategory subCategory;
+    private SUB_CATEGORY subCategory;
 
     private String description;
 

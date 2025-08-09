@@ -2,7 +2,7 @@ package com.split.ai.split.service.model.request.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.Role;
+import com.split.ai.split.service.model.enums.ROLE;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +28,5 @@ public class UserRoleData implements Serializable {
 
     @NotNull
     private UUID userId;
-    private Role role;
+    private ROLE role;
 }

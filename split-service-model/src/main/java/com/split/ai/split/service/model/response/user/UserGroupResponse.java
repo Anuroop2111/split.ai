@@ -2,9 +2,9 @@ package com.split.ai.split.service.model.response.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.GroupStatus;
-import com.split.ai.split.service.model.enums.GroupType;
-import com.split.ai.split.service.model.enums.SettleMode;
+import com.split.ai.split.service.model.enums.GROUP_TYPE;
+import com.split.ai.split.service.model.enums.GROUP_STATUS;
+import com.split.ai.split.service.model.enums.SETTLE_MODE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +29,8 @@ public class UserGroupResponse implements Serializable {
 
     private UUID groupId;
     private String groupName;
-    private GroupType groupType;
-    private SettleMode settleMode;
-    private GroupStatus groupStatus;
+    private GROUP_TYPE GROUPTYPE;
+    private SETTLE_MODE settleMode;
+    private GROUP_STATUS groupStatus;
     private Long createdAt;
 }

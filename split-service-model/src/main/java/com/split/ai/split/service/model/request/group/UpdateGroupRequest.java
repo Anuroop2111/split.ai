@@ -2,7 +2,7 @@ package com.split.ai.split.service.model.request.group;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.GroupType;
+import com.split.ai.split.service.model.enums.GROUP_TYPE;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +30,5 @@ public class UpdateGroupRequest implements Serializable {
     private UUID groupId;
 
     private String newGroupName;
-    private GroupType newGroupType;
+    private GROUP_TYPE newGROUPTYPE;
 }

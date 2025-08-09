@@ -2,7 +2,7 @@ package com.split.ai.split.service.model.request.settlement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.CurrencyType;
+import com.split.ai.split.service.model.enums.CURRENCY;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,5 +38,5 @@ public class SettlementRequest implements Serializable {
     @NotNull
     private BigDecimal amount;
 
-    private CurrencyType currency;
+    private CURRENCY currency;
 }

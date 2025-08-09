@@ -40,10 +40,10 @@ public class CreateExpenseRequest implements Serializable {
     private UUID payerId;
     @NotBlank
     private UUID userId;
-    private SplitMode splitMode;
-    private CurrencyType currency;
-    private SubCategory subCategory;
-    private Category category;
+    private SPLIT_MODE splitMode;
+    private CURRENCY currency;
+    private SUB_CATEGORY subCategory;
+    private CATEGORY category;
     private List<UserExpenseDto> userExpenseDetails; // The expense split created by splitEngine in Frontend-side
     private SplitRequest splitRequest; // The expense logic which we can input to Backend SplitEngine to validate the above logic
     private Long expenseDate;

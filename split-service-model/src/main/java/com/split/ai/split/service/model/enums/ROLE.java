@@ -1,4 +1,6 @@
 package com.split.ai.split.service.model.enums;
 
-public enum SubCategory {
+public enum ROLE {
+    ADMIN,
+    MEMBER
 }

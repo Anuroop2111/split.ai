@@ -2,7 +2,7 @@ package com.split.ai.split.service.model.response.settlement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.CurrencyType;
+import com.split.ai.split.service.model.enums.CURRENCY;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +31,7 @@ public class SettlementResponse implements Serializable {
     private UUID fromUserId;
     private UUID toUserId;
     private BigDecimal amount;
-    private CurrencyType currencyType;
+    private CURRENCY currencyType;
     private String note;
     private Long createdAt;
 }

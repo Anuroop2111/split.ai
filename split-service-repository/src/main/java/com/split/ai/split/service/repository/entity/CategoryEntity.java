@@ -1,7 +1,7 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.model.enums.Category;
-import com.split.ai.split.service.model.enums.SubCategory;
+import com.split.ai.split.service.model.enums.CATEGORY;
+import com.split.ai.split.service.model.enums.SUB_CATEGORY;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,10 +25,10 @@ public class CategoryEntity {
     private UUID categoryId;
 
     @Column(nullable = false)
-    private SubCategory subCategory;
+    private SUB_CATEGORY subCategory;
 
     @Column(nullable = false)
-    private Category category;
+    private CATEGORY category;
 
     private String subCategoryImageUrl;
 

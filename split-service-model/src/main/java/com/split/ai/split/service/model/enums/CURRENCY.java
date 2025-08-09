@@ -1,4 +1,7 @@
 package com.split.ai.split.service.model.enums;
 
-public enum Category {
+public enum CURRENCY {
+    INR,
+    USD,
+    EUR
 }

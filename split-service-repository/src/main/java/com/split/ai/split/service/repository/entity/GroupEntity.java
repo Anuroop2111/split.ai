@@ -1,9 +1,9 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.model.enums.CurrencyType;
-import com.split.ai.split.service.model.enums.GroupStatus;
-import com.split.ai.split.service.model.enums.GroupType;
-import com.split.ai.split.service.model.enums.SettleMode;
+import com.split.ai.split.service.model.enums.CURRENCY;
+import com.split.ai.split.service.model.enums.GROUP_TYPE;
+import com.split.ai.split.service.model.enums.GROUP_STATUS;
+import com.split.ai.split.service.model.enums.SETTLE_MODE;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,19 +33,19 @@ public class GroupEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GroupType groupType;
+    private GROUP_TYPE groupType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CurrencyType currency;
+    private CURRENCY currency;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SettleMode settleMode;
+    private SETTLE_MODE settleMode;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GroupStatus groupStatus;
+    private GROUP_STATUS groupStatus;
 
     @Column(nullable = false, updatable = false)
     private Long createdAt;

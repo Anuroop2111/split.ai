@@ -34,11 +34,11 @@ public class ExpenseResponse implements Serializable {
     private BigDecimal amount;
     private Long expenseDate;
     private String description;
-    private SplitMode splitMode;
-    private CurrencyType currency;
-    private Category category;
-    private SubCategory subCategory;
-    private ExpenseStatus expenseStatus;
+    private SPLIT_MODE splitMode;
+    private CURRENCY currency;
+    private CATEGORY category;
+    private SUB_CATEGORY subCategory;
+    private EXPENSE_STATUS expenseStatus;
     private Long createdAt;
     private List<UserExpenseDto> userExpenseDetails;
 }

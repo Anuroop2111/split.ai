@@ -1,7 +1,7 @@
 package com.split.ai.split.service.repository.entity;
 
 import com.split.ai.split.service.model.enums.LANGUAGE;
-import com.split.ai.split.service.model.enums.UserStatus;
+import com.split.ai.split.service.model.enums.USER_STATUS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -44,7 +44,7 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus userStatus;
+    private USER_STATUS userStatus;
 
     @Column(nullable = false)
     private LANGUAGE language;

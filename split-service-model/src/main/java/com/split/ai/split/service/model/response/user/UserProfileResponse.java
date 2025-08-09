@@ -3,7 +3,7 @@ package com.split.ai.split.service.model.response.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.split.ai.split.service.model.enums.LANGUAGE;
-import com.split.ai.split.service.model.enums.UserStatus;
+import com.split.ai.split.service.model.enums.USER_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +30,6 @@ public class UserProfileResponse implements Serializable {
     private String fullName;
     private String userName;
     private String phone;
-    private UserStatus userStatus;
+    private USER_STATUS userStatus;
     private LANGUAGE language;
 }

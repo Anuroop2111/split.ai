@@ -1,7 +1,7 @@
 package com.split.ai.split.service.model.enums;
 
-public enum GroupStatus {
+public enum EXPENSE_REVISION_STATUS {
     ACTIVE,
-    DELETED,
+    IN_ACTIVE,
     ;
 }

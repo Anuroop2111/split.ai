@@ -2,7 +2,7 @@ package com.split.ai.split.service.model.request.group;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.split.ai.split.service.model.enums.SettleMode;
+import com.split.ai.split.service.model.enums.SETTLE_MODE;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +29,5 @@ public class ToggleGroupSettleMode implements Serializable {
     @NotNull
     private UUID groupId;
 
-    private SettleMode settleMode;
+    private SETTLE_MODE settleMode;
 }

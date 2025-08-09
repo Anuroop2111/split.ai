@@ -1,6 +1,6 @@
 package com.split.ai.split.service.model.enums;
 
-public enum GroupType {
+public enum GROUP_TYPE {
     HOUSE,
     TRIP,
     SPORTS,

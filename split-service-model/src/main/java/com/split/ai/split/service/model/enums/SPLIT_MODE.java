@@ -1,6 +1,6 @@
 package com.split.ai.split.service.model.enums;
 
-public enum SplitMode {
+public enum SPLIT_MODE {
     EQUAL,
     EXACT,
     PERCENTAGE,

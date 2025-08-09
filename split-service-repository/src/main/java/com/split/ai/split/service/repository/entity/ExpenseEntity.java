@@ -1,6 +1,6 @@
 package com.split.ai.split.service.repository.entity;
 
-import com.split.ai.split.service.model.enums.ExpenseStatus;
+import com.split.ai.split.service.model.enums.EXPENSE_STATUS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,7 +49,7 @@ public class ExpenseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ExpenseStatus expenseStatus;
+    private EXPENSE_STATUS expenseStatus;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

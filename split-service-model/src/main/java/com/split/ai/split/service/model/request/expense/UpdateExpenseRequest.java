@@ -38,10 +38,10 @@ public class UpdateExpenseRequest implements Serializable {
     private UUID payerId;
     private BigDecimal amount;
     private Long expenseDate;
-    private SplitMode splitMode;
-    private CurrencyType currency;
-    private Category category;
-    private SubCategory subCategory;
+    private SPLIT_MODE splitMode;
+    private CURRENCY currency;
+    private CATEGORY category;
+    private SUB_CATEGORY subCategory;
     private String description;
     private String metaData;
     private List<UserExpenseData> userExpenseDetails;

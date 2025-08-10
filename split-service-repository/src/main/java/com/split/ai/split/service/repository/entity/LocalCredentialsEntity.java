@@ -2,14 +2,10 @@ package com.split.ai.split.service.repository.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,30 +21,32 @@ import lombok.NoArgsConstructor;
 public class LocalCredentialsEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private UUID id;
-
-    @OneToOne
-    @JoinColumn(name = "identity_id", nullable = false, unique = true)
-    private IdentityEntity identity;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "hash_algo", nullable = false)
+    private String hashAlgo;
 
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Long createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Long updatedAt;
 
     @PrePersist
     @PreUpdate
     public void beforeInsertOrUpdate() {
-        Instant now = Instant.now();
+        long now = System.currentTimeMillis();
         if (createdAt == null) {
             createdAt = now;
         }
         updatedAt = now;
+    }
+
+    public void beforeUpdate() {
+        updatedAt = System.currentTimeMillis();
     }
 }

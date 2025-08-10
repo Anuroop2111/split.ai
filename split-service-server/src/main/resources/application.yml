@@ -5,3 +5,7 @@ spring:
     password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
+security:
+  password:
+    pepper: ${PASSWORD_PEPPER:defaultPepper}
+

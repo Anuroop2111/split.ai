@@ -1,19 +1,21 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.core.mapper.UserAuthServiceMapper;
 import com.split.ai.split.service.core.service.IPasswordService;
 import com.split.ai.split.service.core.service.IUserAuthService;
-import com.split.ai.split.service.core.userauth.model.LoginServiceRequest;
-import com.split.ai.split.service.core.userauth.model.LoginServiceResponse;
-import com.split.ai.split.service.core.userauth.model.LogoutServiceRequest;
-import com.split.ai.split.service.core.userauth.model.SignupServiceRequest;
-import com.split.ai.split.service.core.userauth.model.SignupServiceResponse;
 import com.split.ai.split.service.model.enums.IDENTITY_PROVIDER;
+import com.split.ai.split.service.model.request.userauth.LoginRequest;
+import com.split.ai.split.service.model.request.userauth.LogoutRequest;
+import com.split.ai.split.service.model.request.userauth.SignupRequest;
+import com.split.ai.split.service.model.response.userauth.LoginResponse;
+import com.split.ai.split.service.model.response.userauth.SignupResponse;
 import com.split.ai.split.service.repository.IdentityDao;
 import com.split.ai.split.service.repository.LocalCredentialsDao;
 import com.split.ai.split.service.repository.entity.IdentityEntity;
 import com.split.ai.split.service.repository.entity.LocalCredentialsEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,7 +30,10 @@ public class UserAuthService implements IUserAuthService {
     private final LocalCredentialsDao localCredentialsDao;
     private final IPasswordService passwordService;
 
-    public SignupServiceResponse signup(SignupServiceRequest request) {
+    @Value("${security.password.hash-algo}")
+    private String hashAlgo;
+
+    public SignupResponse signup(SignupRequest request) {
         log.info("[UserAuthService : signup] : userName={}", request.getUserName());
         UUID userId = UUID.randomUUID();
         IdentityEntity identityEntity = IdentityEntity.builder()
@@ -44,17 +49,14 @@ public class UserAuthService implements IUserAuthService {
         LocalCredentialsEntity credentialsEntity = LocalCredentialsEntity.builder()
                 .userId(userId)
                 .passwordHash(encodedPassword)
-                .hashAlgo("argon2id")
+                .hashAlgo(hashAlgo)
                 .build();
         localCredentialsDao.save(credentialsEntity);
 
-        return SignupServiceResponse.builder()
-                .userId(userId)
-                .userName(request.getUserName())
-                .build();
+        return UserAuthServiceMapper.MAPPER.toSignupResponse(request, userId);
     }
 
-    public LoginServiceResponse login(LoginServiceRequest request) {
+    public LoginResponse login(LoginRequest request) {
         log.info("[UserAuthService : login] : identifier={}", request.getIdentifier());
         Optional<IdentityEntity> identityOpt = identityDao.findByProviderAndIdentifier(IDENTITY_PROVIDER.LOCAL, request.getIdentifier());
         IdentityEntity identityEntity = identityOpt.orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
@@ -69,14 +71,11 @@ public class UserAuthService implements IUserAuthService {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        return LoginServiceResponse.builder()
-                .userId(identityEntity.getUserId())
-                .userName(identityEntity.getIdentifier())
-                .build();
+        return UserAuthServiceMapper.MAPPER.toLoginResponse(identityEntity);
     }
 
     // todo
-    public void logout(LogoutServiceRequest request) {
+    public void logout(LogoutRequest request) {
         log.info("[UserAuthService : logout] : noop");
     }
 }

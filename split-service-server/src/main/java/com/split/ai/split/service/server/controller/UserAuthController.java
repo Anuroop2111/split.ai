@@ -1,9 +1,6 @@
 package com.split.ai.split.service.server.controller;
 
-import com.split.ai.split.service.core.mapper.UserAuthMapper;
 import com.split.ai.split.service.core.service.IUserAuthService;
-import com.split.ai.split.service.core.userauth.model.LoginServiceResponse;
-import com.split.ai.split.service.core.userauth.model.SignupServiceResponse;
 import com.split.ai.split.service.model.request.userauth.LoginRequest;
 import com.split.ai.split.service.model.request.userauth.LogoutRequest;
 import com.split.ai.split.service.model.request.userauth.SignupRequest;
@@ -28,20 +25,18 @@ public class UserAuthController {
     @PostMapping("/signup")
     public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
         log.info("[UserAuthController : signup] : userName={}", request.getUserName());
-        SignupServiceResponse response = userAuthService.signup(UserAuthMapper.MAPPER.toServiceRequest(request));
-        return UserAuthMapper.MAPPER.toSignupResponse(response);
+        return userAuthService.signup(request);
     }
 
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         log.info("[UserAuthController : login] : identifier={}", request.getIdentifier());
-        LoginServiceResponse response = userAuthService.login(UserAuthMapper.MAPPER.toServiceRequest(request));
-        return UserAuthMapper.MAPPER.toLoginResponse(response);
+        return userAuthService.login(request);
     }
 
     @PostMapping("/logout")
     public void logout(@RequestBody LogoutRequest request) {
         log.info("[UserAuthController : logout] : noop");
-        userAuthService.logout(UserAuthMapper.MAPPER.toServiceRequest(request));
+        userAuthService.logout(request);
     }
 }

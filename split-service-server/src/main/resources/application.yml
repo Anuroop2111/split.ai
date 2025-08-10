@@ -8,4 +8,5 @@ spring:
 security:
   password:
     pepper: ${PASSWORD_PEPPER:defaultPepper}
+    hash-algo: argon2id
 

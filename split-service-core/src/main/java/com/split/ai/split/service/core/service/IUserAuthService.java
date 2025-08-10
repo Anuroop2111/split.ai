@@ -1,16 +1,16 @@
 package com.split.ai.split.service.core.service;
 
-import com.split.ai.split.service.core.userauth.model.LoginServiceRequest;
-import com.split.ai.split.service.core.userauth.model.LoginServiceResponse;
-import com.split.ai.split.service.core.userauth.model.LogoutServiceRequest;
-import com.split.ai.split.service.core.userauth.model.SignupServiceRequest;
-import com.split.ai.split.service.core.userauth.model.SignupServiceResponse;
+import com.split.ai.split.service.model.request.userauth.LoginRequest;
+import com.split.ai.split.service.model.request.userauth.LogoutRequest;
+import com.split.ai.split.service.model.request.userauth.SignupRequest;
+import com.split.ai.split.service.model.response.userauth.LoginResponse;
+import com.split.ai.split.service.model.response.userauth.SignupResponse;
 
 public interface IUserAuthService {
 
-    SignupServiceResponse signup(SignupServiceRequest request);
+    SignupResponse signup(SignupRequest request);
 
-    LoginServiceResponse login(LoginServiceRequest request);
+    LoginResponse login(LoginRequest request);
 
-    void logout(LogoutServiceRequest request);
+    void logout(LogoutRequest request);
 }

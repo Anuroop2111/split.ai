@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.split.ai.split.service.model.enums.IDENTITY_PROVIDER;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +21,6 @@ public class SignupRequest {
 
     @NotBlank
     private String password;
+
+    private IDENTITY_PROVIDER provider = IDENTITY_PROVIDER.LOCAL;
 }

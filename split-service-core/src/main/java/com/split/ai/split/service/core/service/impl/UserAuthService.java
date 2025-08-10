@@ -35,22 +35,16 @@ public class UserAuthService implements IUserAuthService {
 
     public SignupResponse signup(SignupRequest request) {
         log.info("[UserAuthService : signup] : userName={}", request.getUserName());
+        if (request.getProvider() == null) {
+            request.setProvider(IDENTITY_PROVIDER.LOCAL);
+        }
         UUID userId = UUID.randomUUID();
-        IdentityEntity identityEntity = IdentityEntity.builder()
-                .identityId(UUID.randomUUID())
-                .userId(userId)
-                .provider(IDENTITY_PROVIDER.LOCAL)
-                .identifier(request.getEmailId())
-                .verified(Boolean.FALSE)
-                .build();
+        IdentityEntity identityEntity = UserAuthServiceMapper.MAPPER.toIdentityEntity(request, userId);
         identityDao.save(identityEntity);
 
         String encodedPassword = passwordService.encode(request.getPassword());
-        LocalCredentialsEntity credentialsEntity = LocalCredentialsEntity.builder()
-                .userId(userId)
-                .passwordHash(encodedPassword)
-                .hashAlgo(hashAlgo)
-                .build();
+        LocalCredentialsEntity credentialsEntity = UserAuthServiceMapper.MAPPER
+                .toLocalCredentialsEntity(userId, encodedPassword, hashAlgo);
         localCredentialsDao.save(credentialsEntity);
 
         return UserAuthServiceMapper.MAPPER.toSignupResponse(request, userId);

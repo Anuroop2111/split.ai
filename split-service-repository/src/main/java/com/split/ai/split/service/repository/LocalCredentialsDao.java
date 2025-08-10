@@ -1,7 +1,7 @@
 package com.split.ai.split.service.repository;
 
+import com.split.ai.commons.postgres.PostgresClient;
 import com.split.ai.split.service.repository.entity.LocalCredentialsEntity;
-import com.split.ai.split.service.repository.jpa.LocalCredentialsJpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -13,23 +13,22 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class LocalCredentialsDao {
 
-    private final LocalCredentialsJpaRepository localCredentialsJpaRepository;
+    private final PostgresClient postgresClient;
 
     public LocalCredentialsEntity save(LocalCredentialsEntity entity) {
-        try {
-            return localCredentialsJpaRepository.save(entity);
-        } catch (Exception e) {
-            log.error("[LocalCredentialsDao : save] : error saving credentials for identity {}", entity.getIdentity().getId(), e);
-            throw e;
-        }
+        log.debug("[LocalCredentialsDao : save] : {}", entity);
+        entity.beforeInsertOrUpdate();
+        return postgresClient.insert(entity);
     }
 
-    public Optional<LocalCredentialsEntity> findByIdentityId(UUID identityId) {
-        try {
-            return localCredentialsJpaRepository.findByIdentityId(identityId);
-        } catch (Exception e) {
-            log.error("[LocalCredentialsDao : findByIdentityId] : error finding credentials for identity {}", identityId, e);
-            throw e;
-        }
+    public void update(LocalCredentialsEntity entity) {
+        log.debug("[LocalCredentialsDao : update] : {}", entity);
+        entity.beforeUpdate();
+        postgresClient.partialUpdate(entity);
+    }
+
+    public Optional<LocalCredentialsEntity> findByUserId(UUID userId) {
+        log.debug("[LocalCredentialsDao : findByUserId] : {}", userId);
+        return Optional.ofNullable(postgresClient.findById(LocalCredentialsEntity.class, userId));
     }
 }

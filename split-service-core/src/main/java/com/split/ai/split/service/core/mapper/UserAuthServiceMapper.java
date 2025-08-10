@@ -24,10 +24,10 @@ public interface UserAuthServiceMapper extends BaseServiceMapper {
     LoginResponse toLoginResponse(IdentityEntity identityEntity);
 
     @Mapping(target = "identityId", source = "request", qualifiedByName = "randomUUID")
-    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "userId", source = "request", qualifiedByName = "randomUUID")
     @Mapping(target = "provider", source = "request.provider")
     @Mapping(target = "identifier", source = "request.emailId")
-    IdentityEntity toIdentityEntity(SignupRequest request, UUID userId);
+    IdentityEntity toIdentityEntity(SignupRequest request, Boolean verified);
 
     @Mapping(target = "userId", source = "userId")
     @Mapping(target = "passwordHash", source = "encodedPassword")

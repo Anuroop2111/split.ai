@@ -3,7 +3,6 @@ package com.split.ai.split.service.core.service.impl;
 import com.split.ai.split.service.core.mapper.UserAuthServiceMapper;
 import com.split.ai.split.service.core.service.IPasswordService;
 import com.split.ai.split.service.core.service.IUserAuthService;
-import com.split.ai.split.service.model.enums.IDENTITY_PROVIDER;
 import com.split.ai.split.service.model.request.userauth.LoginRequest;
 import com.split.ai.split.service.model.request.userauth.LogoutRequest;
 import com.split.ai.split.service.model.request.userauth.SignupRequest;
@@ -35,16 +34,12 @@ public class UserAuthService implements IUserAuthService {
 
     public SignupResponse signup(SignupRequest request) {
         log.info("[UserAuthService : signup] : userName={}", request.getUserName());
-        if (request.getProvider() == null) {
-            request.setProvider(IDENTITY_PROVIDER.LOCAL);
-        }
-        UUID userId = UUID.randomUUID();
-        IdentityEntity identityEntity = UserAuthServiceMapper.MAPPER.toIdentityEntity(request, userId);
+        IdentityEntity identityEntity = UserAuthServiceMapper.MAPPER.toIdentityEntity(request, Boolean.FALSE);
+        UUID userId = identityEntity.getUserId();
         identityDao.save(identityEntity);
 
         String encodedPassword = passwordService.encode(request.getPassword());
-        LocalCredentialsEntity credentialsEntity = UserAuthServiceMapper.MAPPER
-                .toLocalCredentialsEntity(userId, encodedPassword, hashAlgo);
+        LocalCredentialsEntity credentialsEntity = UserAuthServiceMapper.MAPPER.toLocalCredentialsEntity(userId, encodedPassword, hashAlgo);
         localCredentialsDao.save(credentialsEntity);
 
         return UserAuthServiceMapper.MAPPER.toSignupResponse(request, userId);
@@ -52,7 +47,7 @@ public class UserAuthService implements IUserAuthService {
 
     public LoginResponse login(LoginRequest request) {
         log.info("[UserAuthService : login] : identifier={}", request.getIdentifier());
-        Optional<IdentityEntity> identityOpt = identityDao.findByProviderAndIdentifier(IDENTITY_PROVIDER.LOCAL, request.getIdentifier());
+        Optional<IdentityEntity> identityOpt = identityDao.findByProviderAndIdentifier(request.getProvider(), request.getIdentifier());
         IdentityEntity identityEntity = identityOpt.orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
         LocalCredentialsEntity credentialsEntity = localCredentialsDao.findByUserId(identityEntity.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));

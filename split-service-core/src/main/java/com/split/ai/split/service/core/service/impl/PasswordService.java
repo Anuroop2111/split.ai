@@ -37,6 +37,7 @@ public class PasswordService implements IPasswordService {
         return matches;
     }
 
+    // Peppering before salting
     private String hmacSha256(String value) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");

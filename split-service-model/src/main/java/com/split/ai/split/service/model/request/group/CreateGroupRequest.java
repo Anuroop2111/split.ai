@@ -38,7 +38,7 @@ public class CreateGroupRequest implements Serializable {
 
     private List<UserRoleData> additionalUserData;
 
-    private GROUP_TYPE GROUPTYPE;
+    private GROUP_TYPE groupType;
 
     private CURRENCY baseCurrency;
 }

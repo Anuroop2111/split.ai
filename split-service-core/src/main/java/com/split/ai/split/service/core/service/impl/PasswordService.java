@@ -1,19 +1,21 @@
-package com.split.ai.split.service.core.userauth;
+package com.split.ai.split.service.core.service.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import com.split.ai.split.service.core.service.IPasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PasswordService {
+public class PasswordService implements IPasswordService {
 
     private final PasswordEncoder passwordEncoder;
 

@@ -1,4 +1,4 @@
-package com.split.ai.split.service.model.userauth;
+package com.split.ai.split.service.model.request.userauth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -21,19 +21,19 @@ import lombok.NoArgsConstructor;
 public class LocalCredentialsEntity {
 
     @Id
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private UUID userId;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(nullable = false)
     private String passwordHash;
 
-    @Column(name = "hash_algo", nullable = false)
+    @Column(nullable = false)
     private String hashAlgo;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(nullable = false)
     private Long updatedAt;
 
     @PrePersist

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -177,7 +178,7 @@ public class PostgresClientImpl implements PostgresClient {
         if (lockMode != null) {
             query.setLockMode(lockMode);
             if (extendScope) {
-                query.setHint("javax.persistence.lock.scope", "EXTENDED");
+                query.setHint("javax.persistence.lock.scope", PessimisticLockScope.EXTENDED);
             }
             query.setHint(
                     "javax.persistence.lock.timeout",

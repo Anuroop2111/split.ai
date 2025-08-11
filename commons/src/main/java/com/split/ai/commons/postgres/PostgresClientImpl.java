@@ -10,6 +10,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -31,6 +32,7 @@ import java.util.Map;
 @Repository
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class PostgresClientImpl implements PostgresClient {
 
     private static final int DEFAULT_LOCK_TIME = 5;
@@ -148,6 +150,7 @@ public class PostgresClientImpl implements PostgresClient {
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
         T existing = findEntity(cls, id, lockMode, lockTimeout);
         if (existing == null) {
+            log.error("[PostgresClientImpl : doPartialUpdate] : entity {} with id {} not found", cls.getSimpleName(), id);
             throw SplitException.createException(ErrorCode.ENTITY_NOT_FOUND);
         }
         BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));

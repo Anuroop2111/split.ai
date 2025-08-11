@@ -123,6 +123,7 @@ public class GroupService implements IGroupService {
     private void validateAdmin(UUID groupId, UUID userId) {
         UserRoleData data = userGroupDao.findUserRole(groupId, userId);
         if (data == null || data.getRole() != ROLE.ADMIN) {
+            log.error("[GroupService : validateAdmin] : user {} unauthorized for group {}", userId, groupId);
             throw SplitException.createException(ErrorCode.UNAUTHORIZED_OPERATION);
         }
     }

@@ -1,5 +1,7 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.core.helper.ExpenseHelper;
 import com.split.ai.split.service.core.mapper.ExpenseServiceMapper;
 import com.split.ai.split.service.core.service.IExpenseService;
@@ -68,7 +70,7 @@ public class ExpenseService implements IExpenseService {
 
         ExpenseEntity existing = expenseDao.findById(request.getExpenseId());
         if (existing == null) {
-            throw new IllegalArgumentException("[ExpenseService : updateExpense] Expense not found for expenseId: {}");
+            throw SplitException.createException(ErrorCode.ENTITY_NOT_FOUND);
         }
 
         ExpenseRevisionEntity currentRevision = existing.getCurrentRevision();
@@ -77,7 +79,7 @@ public class ExpenseService implements IExpenseService {
         ExpenseRevisionEntity newRevision = updatedFlagAndUpdatedExpenseRevision.getRight();
 
         if (!updated) {
-            throw new IllegalArgumentException("[ExpenseService : updateExpense] Invalid Expense Update Request");
+            throw SplitException.createException(ErrorCode.INVALID_EXPENSE_UPDATE);
         }
 
         currentRevision.setRevisionStatus(EXPENSE_REVISION_STATUS.IN_ACTIVE);

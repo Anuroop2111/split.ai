@@ -1,5 +1,7 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.core.mapper.GroupServiceMapper;
 import com.split.ai.split.service.core.service.IGroupService;
 import com.split.ai.split.service.model.request.group.AddUserToGroupRequest;
@@ -121,7 +123,7 @@ public class GroupService implements IGroupService {
     private void validateAdmin(UUID groupId, UUID userId) {
         UserRoleData data = userGroupDao.findUserRole(groupId, userId);
         if (data == null || data.getRole() != ROLE.ADMIN) {
-            throw new RuntimeException("User does not have ADMIN role");
+            throw SplitException.createException(ErrorCode.UNAUTHORIZED_OPERATION);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.split.ai.split.service.repository.dao.impl;
 
 import com.split.ai.commons.postgres.PostgresClient;
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.repository.dao.ISettlementDao;
 import com.split.ai.split.service.repository.entity.SettlementEntity;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class SettlementDao implements ISettlementDao {
             postgresClient.insert(entity);
         } catch (Exception e) {
             log.error("[SettlementDao : save] : error saving settlement {}", entity.getSettlementId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -39,7 +41,7 @@ public class SettlementDao implements ISettlementDao {
             postgresClient.partialUpdate(entity);
         } catch (Exception e) {
             log.error("[SettlementDao : update] : error updating settlement {}", entity.getSettlementId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -50,7 +52,7 @@ public class SettlementDao implements ISettlementDao {
             return postgresClient.findById(SettlementEntity.class, settlementId);
         } catch (Exception e) {
             log.error("[SettlementDao : findById] : error fetching settlement {}", settlementId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

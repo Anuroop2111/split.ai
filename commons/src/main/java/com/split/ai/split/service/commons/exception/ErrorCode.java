@@ -1,10 +1,12 @@
 package com.split.ai.split.service.commons.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 /**
  * Enumeration of application specific error codes.
  */
+@Slf4j
 public enum ErrorCode {
     GENERIC_ERROR(1000, "An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_NOT_FOUND(1001, "User not found", HttpStatus.NOT_FOUND),
@@ -52,6 +54,7 @@ public enum ErrorCode {
                 return errorCode;
             }
         }
+        log.error("[ErrorCode : fromCode] : unknown error code {}", code);
         throw SplitException.createException(ErrorCode.INVALID_ERROR_CODE);
     }
 }

@@ -50,15 +50,22 @@ public class UserAuthService implements IUserAuthService {
     public LoginResponse login(LoginRequest request) {
         log.info("[UserAuthService : login] : identifier={}", request.getIdentifier());
         Optional<IdentityEntity> identityOpt = identityDao.findByProviderAndIdentifier(request.getProvider(), request.getIdentifier());
-        IdentityEntity identityEntity = identityOpt.orElseThrow(() -> SplitException.createException(ErrorCode.INVALID_CREDENTIALS));
+        IdentityEntity identityEntity = identityOpt.orElseThrow(() -> {
+            log.error("[UserAuthService : login] : identity not found for provider {} identifier {}", request.getProvider(), request.getIdentifier());
+            return SplitException.createException(ErrorCode.INVALID_CREDENTIALS);
+        });
         LocalCredentialsEntity credentialsEntity = localCredentialsDao.findByUserId(identityEntity.getUserId())
-                .orElseThrow(() -> SplitException.createException(ErrorCode.INVALID_CREDENTIALS));
+                .orElseThrow(() -> {
+                    log.error("[UserAuthService : login] : credentials not found for user {}", identityEntity.getUserId());
+                    return SplitException.createException(ErrorCode.INVALID_CREDENTIALS);
+                });
 
         boolean matches = passwordService.matchesAndUpgrade(request.getPassword(), credentialsEntity.getPasswordHash(), newHash -> {
             credentialsEntity.setPasswordHash(newHash);
             localCredentialsDao.update(credentialsEntity);
         });
         if (!matches) {
+            log.error("[UserAuthService : login] : password mismatch for user {}", identityEntity.getUserId());
             throw SplitException.createException(ErrorCode.INVALID_CREDENTIALS);
         }
 

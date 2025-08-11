@@ -70,6 +70,7 @@ public class ExpenseService implements IExpenseService {
 
         ExpenseEntity existing = expenseDao.findById(request.getExpenseId());
         if (existing == null) {
+            log.error("[ExpenseService : updateExpense] : expense {} not found", request.getExpenseId());
             throw SplitException.createException(ErrorCode.ENTITY_NOT_FOUND);
         }
 
@@ -79,6 +80,7 @@ public class ExpenseService implements IExpenseService {
         ExpenseRevisionEntity newRevision = updatedFlagAndUpdatedExpenseRevision.getRight();
 
         if (!updated) {
+            log.error("[ExpenseService : updateExpense] : invalid update {}", request);
             throw SplitException.createException(ErrorCode.INVALID_EXPENSE_UPDATE);
         }
 

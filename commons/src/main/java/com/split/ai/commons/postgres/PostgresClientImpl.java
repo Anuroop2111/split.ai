@@ -1,7 +1,6 @@
 package com.split.ai.commons.postgres;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PessimisticLockScope;
@@ -16,6 +15,9 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -146,7 +148,7 @@ public class PostgresClientImpl implements PostgresClient {
         Object id = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(object);
         T existing = findEntity(cls, id, lockMode, lockTimeout);
         if (existing == null) {
-            throw new EntityNotFoundException(cls.getSimpleName() + " with ID " + id + " not found");
+            throw SplitException.createException(ErrorCode.ENTITY_NOT_FOUND);
         }
         BeanUtils.copyProperties(object, existing, getNullPropertyNames(object));
         return existing;

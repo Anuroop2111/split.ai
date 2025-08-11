@@ -1,5 +1,7 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.core.mapper.UserAuthServiceMapper;
 import com.split.ai.split.service.core.service.IPasswordService;
 import com.split.ai.split.service.core.service.IUserAuthService;
@@ -48,16 +50,16 @@ public class UserAuthService implements IUserAuthService {
     public LoginResponse login(LoginRequest request) {
         log.info("[UserAuthService : login] : identifier={}", request.getIdentifier());
         Optional<IdentityEntity> identityOpt = identityDao.findByProviderAndIdentifier(request.getProvider(), request.getIdentifier());
-        IdentityEntity identityEntity = identityOpt.orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+        IdentityEntity identityEntity = identityOpt.orElseThrow(() -> SplitException.createException(ErrorCode.INVALID_CREDENTIALS));
         LocalCredentialsEntity credentialsEntity = localCredentialsDao.findByUserId(identityEntity.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+                .orElseThrow(() -> SplitException.createException(ErrorCode.INVALID_CREDENTIALS));
 
         boolean matches = passwordService.matchesAndUpgrade(request.getPassword(), credentialsEntity.getPasswordHash(), newHash -> {
             credentialsEntity.setPasswordHash(newHash);
             localCredentialsDao.update(credentialsEntity);
         });
         if (!matches) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw SplitException.createException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         return UserAuthServiceMapper.MAPPER.toLoginResponse(identityEntity);

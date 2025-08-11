@@ -1,6 +1,8 @@
 package com.split.ai.split.service.repository.dao.impl;
 
 import com.split.ai.commons.postgres.PostgresClient;
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.model.request.user.UserRoleData;
 import com.split.ai.split.service.repository.dao.IUserGroupDao;
 import com.split.ai.split.service.repository.entity.UserGroupEntity;
@@ -40,7 +42,7 @@ public class UserGroupDao implements IUserGroupDao {
                 postgresClient.insert(entity);
             } catch (Exception e) {
                 log.error("[UserGroupDao : addUsers] : error adding user {} to group {}", user.getUserId(), groupId, e);
-                throw new RuntimeException(e);
+                throw SplitException.createException(ErrorCode.DATABASE_ERROR);
             }
         }
     }
@@ -56,7 +58,7 @@ public class UserGroupDao implements IUserGroupDao {
             postgresClient.queryNative(sql, params, UserGroupEntity.class);
         } catch (Exception e) {
             log.error("[UserGroupDao : removeUser] : error removing user {} from group {}", userId, groupId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -70,7 +72,7 @@ public class UserGroupDao implements IUserGroupDao {
             return postgresClient.queryNative(sql, params, UserRoleData.class);
         } catch (Exception e) {
             log.error("[UserGroupDao : findUsersByGroupId] : error fetching members for group {}", groupId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -86,7 +88,7 @@ public class UserGroupDao implements IUserGroupDao {
             return result.isEmpty() ? null : result.get(0);
         } catch (Exception e) {
             log.error("[UserGroupDao : findUserRole] : error fetching role for user {} in group {}", userId, groupId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

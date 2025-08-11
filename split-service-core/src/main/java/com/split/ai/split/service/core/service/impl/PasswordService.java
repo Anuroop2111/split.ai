@@ -1,5 +1,7 @@
 package com.split.ai.split.service.core.service.impl;
 
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.core.service.IPasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,7 @@ public class PasswordService implements IPasswordService {
             return Base64.getEncoder().encodeToString(result);
         } catch (Exception e) {
             log.error("[PasswordService : hmacSha256] : error while hashing", e);
-            throw new IllegalStateException("Could not hash password", e);
+            throw SplitException.createException(ErrorCode.PASSWORD_HASH_FAILED);
         }
     }
 }

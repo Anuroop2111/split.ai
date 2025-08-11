@@ -1,6 +1,8 @@
 package com.split.ai.split.service.repository.dao.impl;
 
 import com.split.ai.commons.postgres.PostgresClient;
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.repository.dao.IGroupDao;
 import com.split.ai.split.service.repository.entity.GroupEntity;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ public class GroupDao implements IGroupDao {
             postgresClient.insert(entity);
         } catch (Exception e) {
             log.error("[GroupDao : save] : error saving group {}", entity.getGroupId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -42,7 +44,7 @@ public class GroupDao implements IGroupDao {
             postgresClient.partialUpdate(entity);
         } catch (Exception e) {
             log.error("[GroupDao : update] : error updating group {}", entity.getGroupId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -53,7 +55,7 @@ public class GroupDao implements IGroupDao {
             return postgresClient.findById(GroupEntity.class, groupId);
         } catch (Exception e) {
             log.error("[GroupDao : findById] : error fetching group {}", groupId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -73,7 +75,7 @@ public class GroupDao implements IGroupDao {
             return postgresClient.queryNative(sql, params, GroupEntity.class);
         } catch (Exception e) {
             log.error("[GroupDao : findByUserIdPaginated] : error fetching groups for user {} page {} size {}", userId, page, size, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

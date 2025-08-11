@@ -1,6 +1,8 @@
 package com.split.ai.split.service.repository.dao.impl;
 
 import com.split.ai.commons.postgres.PostgresClient;
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.repository.dao.IExpenseRevisionDao;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class ExpenseRevisionDao implements IExpenseRevisionDao {
             postgresClient.insert(entity);
         } catch (Exception e) {
             log.error("[ExpenseRevisionDao : saveRevision] : error saving revision for expenseId {}, expenseRevisionId: {}", entity.getExpenseId(), entity.getExpenseRevisionId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -37,7 +39,7 @@ public class ExpenseRevisionDao implements IExpenseRevisionDao {
             postgresClient.partialUpdate(entity);
         } catch (Exception e) {
             log.error("[ExpenseRevisionDao : saveRevision] : error updating revision for expenseId {}, expenseRevisionId: {}", entity.getExpenseId(), entity.getExpenseRevisionId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

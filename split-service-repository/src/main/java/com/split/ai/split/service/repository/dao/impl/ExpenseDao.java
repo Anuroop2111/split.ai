@@ -1,6 +1,8 @@
 package com.split.ai.split.service.repository.dao.impl;
 
 import com.split.ai.commons.postgres.PostgresClient;
+import com.split.ai.split.service.commons.exception.ErrorCode;
+import com.split.ai.split.service.commons.exception.SplitException;
 import com.split.ai.split.service.repository.dao.IExpenseDao;
 import com.split.ai.split.service.repository.entity.ExpenseEntity;
 import com.split.ai.split.service.repository.entity.ExpenseRevisionEntity;
@@ -31,7 +33,7 @@ public class ExpenseDao implements IExpenseDao {
             postgresClient.insert(entity);
         } catch (Exception e) {
             log.error("[ExpenseDao : save] : error saving expense {}", entity.getExpenseId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -43,7 +45,7 @@ public class ExpenseDao implements IExpenseDao {
             postgresClient.partialUpdate(entity);
         } catch (Exception e) {
             log.error("[ExpenseDao : update] : error updating expense {}", entity.getExpenseId(), e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -54,7 +56,7 @@ public class ExpenseDao implements IExpenseDao {
             return postgresClient.findById(ExpenseEntity.class, expenseId);
         } catch (Exception e) {
             log.error("[ExpenseDao : findById] : error fetching expense {}", expenseId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -69,7 +71,7 @@ public class ExpenseDao implements IExpenseDao {
             return postgresClient.query(jpql, params, ExpenseRevisionEntity.class);
         } catch (Exception e) {
             log.error("[ExpenseDao : findRevisions] : error fetching revisions for expense {}", expenseId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 
@@ -86,7 +88,7 @@ public class ExpenseDao implements IExpenseDao {
             return postgresClient.query(jpql, params, ExpenseEntity.class);
         } catch (Exception e) {
             log.error("[ExpenseDao : findByGroupId] : error fetching expenses for group {}", groupId, e);
-            throw new RuntimeException(e);
+            throw SplitException.createException(ErrorCode.DATABASE_ERROR);
         }
     }
 }

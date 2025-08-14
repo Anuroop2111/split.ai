@@ -1,0 +1,9 @@
+[submodule "split.ai-Backend"]
+	path = split.ai-Backend
+	url = git@github.com:Anuroop2111/split.ai-Backend.git
+[submodule "split.ai-Frontend"]
+	path = split.ai-Frontend
+	url = git@github.com:Anuroop2111/split.ai-Frontend.git
+[submodule "split.ai-split-engine"]
+	path = split.ai-split-engine
+	url = git@github.com:Anuroop2111/split.ai-split-engine.git

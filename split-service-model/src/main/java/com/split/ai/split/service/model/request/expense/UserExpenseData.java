@@ -22,7 +22,6 @@ public class UserExpenseData implements Serializable {
     @Serial
     private static final long serialVersionUID = 2331989438500758138L;
 
-    private UUID expenseId;
     private UUID userId;
     private BigDecimal sharedAmount;
 }

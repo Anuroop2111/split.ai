@@ -32,5 +32,11 @@
             <version>${commons-lang.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.split</groupId>
+            <artifactId>split-engine-jvm</artifactId>
+            <version>${split-engine.version}</version>
+        </dependency>
+
     </dependencies>
 </project>
